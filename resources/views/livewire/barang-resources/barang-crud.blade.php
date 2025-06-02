@@ -34,6 +34,8 @@
           </div>
         </div>
 
+
+
         <div class="mb-3">
 
           <x-select label="Availability" wire:model="masterForm.availability" :options="[['id' => 'on-sale', 'name' => 'On Sale'], ['id' => 'out-of-stock', 'name' => 'Out Of Stock']]" />
@@ -74,14 +76,13 @@
             placeholder="Rating" :readonly="$isReadonly" />
         </div>
 
-        <div class="mb-3 ">
-          <x-file wire:model="masterForm.image_url" label="Image" accept="image/*" :disabled="$isDisabled">
-            <img
-              src="{{ $masterForm->image_url ?? 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930' }}"
-              class="h-48 rounded-lg" />
-          </x-file>
-        </div>
-        <div wire:loading wire:target="masterForm.image_url">
+        <x-file wire:model="masterForm.image_url" label="Image" accept="image/*" crop-after-change
+          {{-- :disabled="$isDisabled" --}}>
+          <img
+            src="{{ $masterForm->image_url ?? 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930' }}"
+            class="h-48 rounded-lg" />
+        </x-file>
+        <div wire:loading wire:target="masterForm.name">
           Uploading Image ...
         </div>
 

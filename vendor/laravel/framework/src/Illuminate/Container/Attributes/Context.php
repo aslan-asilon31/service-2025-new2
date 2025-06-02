@@ -13,7 +13,7 @@ class Context implements ContextualAttribute
     /**
      * Create a new attribute instance.
      */
-    public function __construct(public string $key, public mixed $default = null, public bool $hidden = false)
+    public function __construct(public string $key, public mixed $default = null)
     {
     }
 
@@ -26,11 +26,6 @@ class Context implements ContextualAttribute
      */
     public static function resolve(self $attribute, Container $container): mixed
     {
-        $repository = $container->make(Repository::class);
-
-        return match ($attribute->hidden) {
-            true => $repository->getHidden($attribute->key, $attribute->default),
-            false => $repository->get($attribute->key, $attribute->default),
-        };
+        return $container->make(Repository::class)->get($attribute->key, $attribute->default);
     }
 }

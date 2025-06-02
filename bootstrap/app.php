@@ -12,6 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
+            'pegawai' => \App\Http\Middleware\Pegawai::class,
             'admin' => \App\Http\Middleware\Admin::class,
             'auth' => \App\Http\Middleware\User::class,
             'check.permission' => \App\Http\Middleware\CheckPermission::class,

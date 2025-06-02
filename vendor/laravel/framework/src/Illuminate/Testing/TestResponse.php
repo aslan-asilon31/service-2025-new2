@@ -1670,8 +1670,6 @@ class TestResponse implements ArrayAccess
             foreach ($key as $value) {
                 $this->assertSessionMissing($value);
             }
-
-            return $this;
         }
 
         if (is_null($value)) {

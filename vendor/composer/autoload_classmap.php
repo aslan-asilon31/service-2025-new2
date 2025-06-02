@@ -2404,7 +2404,6 @@ return array(
     'Illuminate\\Validation\\Rules\\AnyOf' => $vendorDir . '/laravel/framework/src/Illuminate/Validation/Rules/AnyOf.php',
     'Illuminate\\Validation\\Rules\\ArrayRule' => $vendorDir . '/laravel/framework/src/Illuminate/Validation/Rules/ArrayRule.php',
     'Illuminate\\Validation\\Rules\\Can' => $vendorDir . '/laravel/framework/src/Illuminate/Validation/Rules/Can.php',
-    'Illuminate\\Validation\\Rules\\Contains' => $vendorDir . '/laravel/framework/src/Illuminate/Validation/Rules/Contains.php',
     'Illuminate\\Validation\\Rules\\DatabaseRule' => $vendorDir . '/laravel/framework/src/Illuminate/Validation/Rules/DatabaseRule.php',
     'Illuminate\\Validation\\Rules\\Date' => $vendorDir . '/laravel/framework/src/Illuminate/Validation/Rules/Date.php',
     'Illuminate\\Validation\\Rules\\Dimensions' => $vendorDir . '/laravel/framework/src/Illuminate/Validation/Rules/Dimensions.php',
