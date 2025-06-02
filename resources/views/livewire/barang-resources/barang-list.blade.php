@@ -1,0 +1,3 @@
+<div>
+  barang list
+</div>
