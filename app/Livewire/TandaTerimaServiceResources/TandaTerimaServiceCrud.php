@@ -9,6 +9,8 @@ use App\Models\TrTandaTerimaServiceHeader;
 use App\Models\ProductBrand;
 use App\Models\Product;
 use App\Models\ProductCategoryFirst;
+use App\Helpers\Permission\Traits\WithPermission;
+
 
 class TandaTerimaServiceCrud extends Component
 {
@@ -21,9 +23,10 @@ class TandaTerimaServiceCrud extends Component
 
   use \Livewire\WithFileUploads;
   use \Mary\Traits\Toast;
+  use WithPermission;
 
   #[\Livewire\Attributes\Locked]
-  public string $title = 'Product';
+  public string $title = 'Tanda Terima Service';
 
   public  $brands = [];
 
@@ -63,14 +66,16 @@ class TandaTerimaServiceCrud extends Component
 
   public function mount()
   {
+
+
     if ($this->id && $this->readonly) {
-      $this->title .= ' (Show)';
-      $this->show();
+      $this->title .= ' (Tampil)';
+      $this->tampil();
     } else if ($this->id) {
-      $this->title .= ' (ubah)';
+      $this->title .= ' (Ubah)';
       $this->ubah();
     } else {
-      $this->title .= ' (buat)';
+      $this->title .= ' (Buat)';
       $this->buat();
     }
 
@@ -80,13 +85,7 @@ class TandaTerimaServiceCrud extends Component
 
   public function initialize() {}
 
-  public function buat()
-  {
 
-    $this->permission('tanda-terima-service-buat');
-
-    $this->masterForm->reset();
-  }
 
   public function store()
   {
@@ -100,8 +99,8 @@ class TandaTerimaServiceCrud extends Component
     \Illuminate\Support\Facades\DB::beginTransaction();
     try {
 
-      $validatedForm['created_by'] = 'admin';
-      $validatedForm['updated_by'] = 'admin';
+      $validatedForm['dibuat_oleh'] = 'admin';
+      $validatedForm['diupdate_oleh'] = 'admin';
       $validatedForm['is_activated'] = 1;
       // image_url
       $folderName = $this->baseFolderName;
@@ -128,7 +127,17 @@ class TandaTerimaServiceCrud extends Component
     }
   }
 
-  public function show()
+  public function buat()
+  {
+    $this->permission('tanda-terima-service-buat');
+    // $this->masterForm->reset();
+    // dd('cek1');
+
+    $nomorTerakhir = \Illuminate\Support\Facades\DB::table('ms_barang')->max('nomor') ?? 0;
+    $this->masterForm->nomor = $nomorTerakhir + 1;
+  }
+
+  public function tampil()
   {
     $this->isReadonly = true;
     $this->isDisabled = true;
@@ -157,7 +166,7 @@ class TandaTerimaServiceCrud extends Component
 
     try {
 
-      $validatedForm['updated_by'] = auth()->user()->username ?? null;
+      $validatedForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama ?? null;
 
       // image_url
       $folderName = $this->baseFolderName;
@@ -204,61 +213,4 @@ class TandaTerimaServiceCrud extends Component
       $this->error('Data failed to delete');
     }
   }
-
-
-  // Hook
-  public function updatedMasterFormSellingPrice()
-  {
-    try {
-      $this->masterForm->discount_value = $this->masterForm->selling_price * $this->masterForm->discount_persentage / 100;
-      $this->masterForm->nett_price = $this->masterForm->selling_price - $this->masterForm->discount_value;
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-
-  public function updatedMasterFormDiscountPersentage()
-  {
-    try {
-      $this->masterForm->discount_value = $this->masterForm->selling_price * $this->masterForm->discount_persentage / 100;
-      $this->masterForm->nett_price = $this->masterForm->selling_price - $this->masterForm->discount_value;
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-
-  public function updatedMasterFormDiscountValue()
-  {
-
-    try {
-      $this->masterForm->discount_persentage = ($this->masterForm->discount_value / $this->masterForm->selling_price) * 100;
-      $this->masterForm->discount_persentage = number_format($this->masterForm->discount_persentage, 2);
-      $this->masterForm->nett_price = $this->masterForm->selling_price - $this->masterForm->discount_value;
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-
-  public function updatedMasterFormNettPrice()
-  {
-    try {
-      $this->masterForm->discount_value = $this->masterForm->selling_price - $this->masterForm->nett_price;
-      $this->masterForm->discount_persentage = ($this->masterForm->discount_value / $this->masterForm->selling_price) * 100;
-      $this->masterForm->discount_persentage = number_format($this->masterForm->discount_persentage, 2);
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-  // ./Hook
-
-
-
 }

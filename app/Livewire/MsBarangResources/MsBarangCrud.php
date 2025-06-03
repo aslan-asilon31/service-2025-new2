@@ -148,7 +148,7 @@ class MsBarangCrud extends Component
 
     try {
 
-      $validatedForm['diupdate_oleh'] = auth()->user()->username ?? null;
+      $validatedForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama ?? null;
 
       // image_url
       $folderName = $this->baseFolderName;
@@ -195,61 +195,4 @@ class MsBarangCrud extends Component
       $this->error('Data failed to delete');
     }
   }
-
-
-  // Hook
-  public function updatedMasterFormSellingPrice()
-  {
-    try {
-      $this->masterForm->discount_value = $this->masterForm->selling_price * $this->masterForm->discount_persentage / 100;
-      $this->masterForm->nett_price = $this->masterForm->selling_price - $this->masterForm->discount_value;
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-
-  public function updatedMasterFormDiscountPersentage()
-  {
-    try {
-      $this->masterForm->discount_value = $this->masterForm->selling_price * $this->masterForm->discount_persentage / 100;
-      $this->masterForm->nett_price = $this->masterForm->selling_price - $this->masterForm->discount_value;
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-
-  public function updatedMasterFormDiscountValue()
-  {
-
-    try {
-      $this->masterForm->discount_persentage = ($this->masterForm->discount_value / $this->masterForm->selling_price) * 100;
-      $this->masterForm->discount_persentage = number_format($this->masterForm->discount_persentage, 2);
-      $this->masterForm->nett_price = $this->masterForm->selling_price - $this->masterForm->discount_value;
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-
-  public function updatedMasterFormNettPrice()
-  {
-    try {
-      $this->masterForm->discount_value = $this->masterForm->selling_price - $this->masterForm->nett_price;
-      $this->masterForm->discount_persentage = ($this->masterForm->discount_value / $this->masterForm->selling_price) * 100;
-      $this->masterForm->discount_persentage = number_format($this->masterForm->discount_persentage, 2);
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-  // ./Hook
-
-
-
 }

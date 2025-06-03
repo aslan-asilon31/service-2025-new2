@@ -51,8 +51,8 @@
       @endscope
 
       @scope('cell_status', $row)
-        <x-badge :value="$row->status == 1 ? 'Yes' : 'No'"
-          class=" {{ $row->status == 1 ? 'badge-primary badge-soft' : 'badge-error  badge-soft' }}" />
+        <x-badge :value="$row->status == 'aktif' ? 'Yes' : 'No'"
+          class=" {{ $row->status == 'aktif' ? 'badge-primary badge-soft' : 'badge-error  badge-soft' }}" />
       @endscope
 
     </x-table>

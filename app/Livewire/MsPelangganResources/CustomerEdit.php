@@ -62,7 +62,7 @@ class CustomerEdit extends Component
     $masterData = $this->masterModel::findOrFail($this->id);
 
     try {
-      $validatedForm['updated_by'] = 'admin';
+      $validatedForm['diupdate_oleh'] = 'admin';
       $masterData->update($validatedForm);
       $this->redirect('/customers', true);
       $this->success('Data has been updated');

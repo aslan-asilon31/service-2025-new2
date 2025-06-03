@@ -57,13 +57,10 @@ class TandaTerimaServiceList extends Component
   {
     return [
       ['key' => 'action', 'label' => 'Action', 'sortable' => false, 'class' => 'whitespace-nowrap border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
-      ['key' => 'no_urut', 'label' => '#', 'sortable' => false, 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-right'],
+      ['key' => 'nomor', 'label' => '#', 'sortable' => false, 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-right'],
       ['key' => 'id', 'label' => 'ID', 'sortBy' => 'id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
       ['key' => 'nama', 'label' => 'Nama', 'sortBy' => 'nama', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
-      ['key' => 'image_url', 'label' => 'Image Url', 'sortBy' => 'image_url',  'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
-      ['key' => 'selling_price', 'label' => 'Selling Price', 'sortBy' => 'selling_price', 'format' => ['currency', '2.,', ''], 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-right'],
-      ['key' => 'is_activated', 'label' => 'Activate', 'sortBy' => 'is_activated', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
-      ['key' => 'availability', 'label' => 'Availability', 'sortBy' => 'availability', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
+      ['key' => 'status', 'label' => 'Status', 'sortBy' => 'status', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
       ['key' => 'tgl_dibuat', 'label' => 'Created At', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'tgl_dibuat', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center']
     ];
   }
@@ -76,9 +73,7 @@ class TandaTerimaServiceList extends Component
 
     $query->when($this->search, fn($q) => $q->where('nama', 'like', "%{$this->search}%"))
       ->when(($this->filters['nama'] ?? ''), fn($q) => $q->where('nama', 'like', "%{$this->filters['nama']}%"))
-      ->when(($this->filters['image_url'] ?? ''), fn($q) => $q->where('image_url', "%{$this->filters['image_url']}%"))
-      ->when(($this->filters['selling_price'] ?? ''), fn($q) => $q->where('selling_price', $this->filters['selling_price']))
-      ->when((($this->filters['is_activated']  ?? '') != ''), fn($q) => $q->where('is_activated', $this->filters['is_activated']))
+      ->when(($this->filters['status'] ?? ''), fn($q) => $q->where('status', $this->filters['status']))
       ->when(($this->filters['tgl_dibuat'] ?? ''), function ($q) {
         $dateTime = $this->filters['tgl_dibuat'];
         $dateOnly = substr($dateTime, 0, 10);
@@ -86,13 +81,12 @@ class TandaTerimaServiceList extends Component
       });
 
     $paginator = $query
-      ->orderBy(...array_values($this->sortBy))
+      ->orderBy('nomor', 'asc')
       ->paginate(20);
 
     $start = ($paginator->currentPage() - 1) * $paginator->perPage();
 
     $paginator->getCollection()->transform(function ($item, $key) use ($start) {
-      $item->no_urut = $start + $key + 1;
       return $item;
     });
 

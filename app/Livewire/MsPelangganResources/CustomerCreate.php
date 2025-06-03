@@ -67,8 +67,8 @@ class CustomerCreate extends Component
 
     try {
 
-      $validatedForm['created_by'] = 'admin';
-      $validatedForm['updated_by'] = 'admin';
+      $validatedForm['dibuat_oleh'] = 'admin';
+      $validatedForm['diupdate_oleh'] = 'admin';
 
       $this->masterModel::create($validatedForm);
       $this->redirect('/customers', true);

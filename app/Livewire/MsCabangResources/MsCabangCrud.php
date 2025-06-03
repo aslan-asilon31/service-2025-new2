@@ -64,14 +64,14 @@ class MsCabangCrud extends Component
   public function mount()
   {
     if ($this->id && $this->readonly) {
-      $this->title .= ' (Show)';
-      $this->show();
+      $this->title .= ' (Tampil)';
+      $this->tampil();
     } else if ($this->id) {
-      $this->title .= ' (Edit)';
-      $this->edit();
+      $this->title .= ' (Ubah)';
+      $this->ubah();
     } else {
-      $this->title .= ' (Create)';
-      $this->create();
+      $this->title .= ' (Buat)';
+      $this->buat();
     }
 
     $this->initialize();
@@ -80,7 +80,7 @@ class MsCabangCrud extends Component
 
   public function initialize() {}
 
-  public function create()
+  public function buat()
   {
     $this->masterForm->reset();
   }
@@ -97,8 +97,8 @@ class MsCabangCrud extends Component
     \Illuminate\Support\Facades\DB::beginTransaction();
     try {
 
-      $validatedForm['created_by'] = 'admin';
-      $validatedForm['updated_by'] = 'admin';
+      $validatedForm['dibuat_oleh'] = 'admin';
+      $validatedForm['diupdate_oleh'] = 'admin';
       $validatedForm['is_activated'] = 1;
       // image_url
       $folderName = $this->baseFolderName;
@@ -125,7 +125,7 @@ class MsCabangCrud extends Component
     }
   }
 
-  public function show()
+  public function tampil()
   {
     $this->isReadonly = true;
     $this->isDisabled = true;
@@ -133,7 +133,7 @@ class MsCabangCrud extends Component
     $this->masterForm->fill($masterData);
   }
 
-  public function edit()
+  public function ubah()
   {
     $this->isReadonly = false;
     $this->isDisabled = false;
@@ -152,7 +152,7 @@ class MsCabangCrud extends Component
 
     try {
 
-      $validatedForm['updated_by'] = auth()->user()->username ?? null;
+      $validatedForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama ?? null;
 
       // image_url
       $folderName = $this->baseFolderName;
@@ -199,61 +199,4 @@ class MsCabangCrud extends Component
       $this->error('Data failed to delete');
     }
   }
-
-
-  // Hook
-  public function updatedMasterFormSellingPrice()
-  {
-    try {
-      $this->masterForm->discount_value = $this->masterForm->selling_price * $this->masterForm->discount_persentage / 100;
-      $this->masterForm->nett_price = $this->masterForm->selling_price - $this->masterForm->discount_value;
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-
-  public function updatedMasterFormDiscountPersentage()
-  {
-    try {
-      $this->masterForm->discount_value = $this->masterForm->selling_price * $this->masterForm->discount_persentage / 100;
-      $this->masterForm->nett_price = $this->masterForm->selling_price - $this->masterForm->discount_value;
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-
-  public function updatedMasterFormDiscountValue()
-  {
-
-    try {
-      $this->masterForm->discount_persentage = ($this->masterForm->discount_value / $this->masterForm->selling_price) * 100;
-      $this->masterForm->discount_persentage = number_format($this->masterForm->discount_persentage, 2);
-      $this->masterForm->nett_price = $this->masterForm->selling_price - $this->masterForm->discount_value;
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-
-  public function updatedMasterFormNettPrice()
-  {
-    try {
-      $this->masterForm->discount_value = $this->masterForm->selling_price - $this->masterForm->nett_price;
-      $this->masterForm->discount_persentage = ($this->masterForm->discount_value / $this->masterForm->selling_price) * 100;
-      $this->masterForm->discount_persentage = number_format($this->masterForm->discount_persentage, 2);
-    } catch (\Throwable $th) {
-      $this->masterForm->discount_persentage = 0;
-      $this->masterForm->discount_value = 0;
-      $this->masterForm->nett_price = $this->masterForm->selling_price;
-    }
-  }
-  // ./Hook
-
-
-
 }
