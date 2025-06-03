@@ -16,7 +16,7 @@ return array(
     'App\\Http\\Middleware\\User' => $baseDir . '/app/Http/Middleware/User.php',
     'App\\Livewire\\DashboardResources\\DashboardList' => $baseDir . '/app/Livewire/DashboardResources/DashboardList.php',
     'App\\Livewire\\MsBarangResources\\MsBarangList' => $baseDir . '/app/Livewire/MsBarangResources/MsBarangList.php',
-    'App\\Livewire\\MsCabangResources\\CabangCrud' => $baseDir . '/app/Livewire/MsCabangResources/CabangCrud.php',
+    'App\\Livewire\\MsCabangResources\\CabangCrud' => $baseDir . '/app/Livewire/MsCabangResources/MsCabangCrud.php',
     'App\\Livewire\\MsCabangResources\\Forms\\CabangForm' => $baseDir . '/app/Livewire/MsCabangResources/Forms/CabangForm.php',
     'App\\Livewire\\MsCabangResources\\MsCabangList' => $baseDir . '/app/Livewire/MsCabangResources/MsCabangList.php',
     'App\\Livewire\\MsGudangResources\\MsGudangList' => $baseDir . '/app/Livewire/MsGudangResources/MsGudangList.php',

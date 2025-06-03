@@ -35,6 +35,6 @@ class TrSpTandaTerimaServiceDetail extends Model
 
     public function trSpTandaTerimaServiceHeader()
     {
-        return $this->belongsTo(TrSpTandaTerimaServiceHeader::class);
+        return $this->belongsTo(TrTandaTerimaServiceHeader::class);
     }
 }

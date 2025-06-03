@@ -1,19 +1,21 @@
 <?php
 
-namespace App\Livewire\MsCabangResources;
+namespace App\Livewire\TandaTerimaServiceResources;
 
-use App\Livewire\CabangResources\Forms\CabangForm;
+use App\Livewire\TandaTerimaServiceResources\Forms\TandaTerimaServiceHeaderForm;
 use Livewire\Component;
-use App\Models\CabangBrand;
-use App\Models\Cabang;
-use App\Models\CabangCategoryFirst;
+use App\Models\MsPegawai;
+use App\Models\TrTandaTerimaServiceHeader;
+use App\Models\ProductBrand;
+use App\Models\Product;
+use App\Models\ProductCategoryFirst;
 
-class CabangCrud extends Component
+class TandaTerimaServiceCrud extends Component
 {
 
   public function render()
   {
-    return view('livewire.cabang-resources.cabang-crud')
+    return view('livewire.tanda-terima-service-resources.tanda-terima-service-crud')
       ->title($this->title);
   }
 
@@ -21,7 +23,7 @@ class CabangCrud extends Component
   use \Mary\Traits\Toast;
 
   #[\Livewire\Attributes\Locked]
-  public string $title = 'cabang';
+  public string $title = 'Product';
 
   public  $brands = [];
 
@@ -55,9 +57,9 @@ class CabangCrud extends Component
   public array $options = [];
 
   #[\Livewire\Attributes\Locked]
-  protected $masterModel = \App\Models\Cabang::class;
+  protected $masterModel = \App\Models\TrTandaTerimaServiceHeader::class;
 
-  public CabangForm $masterForm;
+  public TandaTerimaServiceHeaderForm $masterForm;
 
   public function mount()
   {
@@ -65,11 +67,11 @@ class CabangCrud extends Component
       $this->title .= ' (Show)';
       $this->show();
     } else if ($this->id) {
-      $this->title .= ' (Edit)';
-      $this->edit();
+      $this->title .= ' (ubah)';
+      $this->ubah();
     } else {
-      $this->title .= ' (Create)';
-      $this->create();
+      $this->title .= ' (buat)';
+      $this->buat();
     }
 
     $this->initialize();
@@ -78,8 +80,11 @@ class CabangCrud extends Component
 
   public function initialize() {}
 
-  public function create()
+  public function buat()
   {
+
+    $this->permission('tanda-terima-service-buat');
+
     $this->masterForm->reset();
   }
 
@@ -131,8 +136,10 @@ class CabangCrud extends Component
     $this->masterForm->fill($masterData);
   }
 
-  public function edit()
+  public function ubah()
   {
+    $this->permission('tanda-terima-service-ubah');
+
     $this->isReadonly = false;
     $this->isDisabled = false;
     $masterData = $this->masterModel::findOrFail($this->id);

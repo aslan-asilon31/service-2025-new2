@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Livewire\MsPegawaiResources;
+namespace App\Livewire\MsCabangResources;
 
-use App\Livewire\PegawaiResources\Forms\PegawaiForm;
+use App\Livewire\MsCabangResources\Forms\CabangForm;
 use Livewire\Component;
-use App\Models\PegawaiBrand;
-use App\Models\Pegawai;
-use App\Models\PegawaiCategoryFirst;
+use App\Models\MsCabang;
+use App\Models\CabangCategoryFirst;
 use App\Helpers\Permission\Traits\WithPermission;
 
-class PegawaiCrud extends Component
+
+class MsCabangCrud extends Component
 {
 
   public function render()
   {
-    return view('livewire.pegawai-resources.pegawai-crud')
+    return view('livewire.cabang-resources.cabang-crud')
       ->title($this->title);
   }
 
@@ -23,7 +23,7 @@ class PegawaiCrud extends Component
   use WithPermission;
 
   #[\Livewire\Attributes\Locked]
-  public string $title = 'Pegawai';
+  public string $title = 'cabang';
 
   public  $brands = [];
 
@@ -57,22 +57,20 @@ class PegawaiCrud extends Component
   public array $options = [];
 
   #[\Livewire\Attributes\Locked]
-  protected $masterModel = \App\Models\MsPegawai::class;
+  protected $masterModel = \App\Models\MsCabang::class;
 
-  public PegawaiForm $masterForm;
+  public CabangForm $masterForm;
 
   public function mount()
   {
-
-
     if ($this->id && $this->readonly) {
-      $this->title .= ' (Tampil)';
+      $this->title .= ' (Show)';
       $this->show();
     } else if ($this->id) {
-      $this->title .= ' (Ubah)';
+      $this->title .= ' (Edit)';
       $this->edit();
     } else {
-      $this->title .= ' (Buat)';
+      $this->title .= ' (Create)';
       $this->create();
     }
 
@@ -84,7 +82,6 @@ class PegawaiCrud extends Component
 
   public function create()
   {
-    $this->permission('pegawai-buat');
     $this->masterForm->reset();
   }
 

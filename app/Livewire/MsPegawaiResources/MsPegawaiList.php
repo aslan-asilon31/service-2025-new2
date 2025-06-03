@@ -10,6 +10,8 @@ use Livewire\WithPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Livewire\ProductResources\Forms\ProductForm;
 use Mary\Traits\Toast;
+use App\Helpers\Permission\Traits\WithPermission;
+
 
 class MsPegawaiList extends Component
 {
@@ -17,13 +19,13 @@ class MsPegawaiList extends Component
   public string $title = "Pegawai";
   public string $url = "/pegawai";
 
-
-
   #[\Livewire\Attributes\Locked]
   public $id;
 
   use Toast;
   use WithPagination;
+  use WithPermission;
+
 
   #[Url(except: '')]
   public ?string $search = '';

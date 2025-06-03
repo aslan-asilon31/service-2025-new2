@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Livewire\MsCabangResources;
+namespace App\Livewire\MsRakKategoriResources;
 
-use App\Livewire\CabangResources\Forms\CabangForm;
+use App\Livewire\RakKategoriResources\Forms\RakKategoriForm;
 use Livewire\Component;
-use App\Models\CabangBrand;
-use App\Models\Cabang;
-use App\Models\CabangCategoryFirst;
+use App\Models\RakKategoriBrand;
+use App\Models\RakKategori;
+use App\Models\RakKategoriCategoryFirst;
 
-class CabangCrud extends Component
+class MsRakKategoriCrud extends Component
 {
 
   public function render()
   {
-    return view('livewire.cabang-resources.cabang-crud')
+    return view('livewire.rak-kategori-resources.rak-kategori-crud')
       ->title($this->title);
   }
 

@@ -18,7 +18,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: linear-gradient(45deg, #021e29 0%, #00537d 100%);
+      background: linear-gradient(45deg, #fff 0%, #ffffff 100%);
     }
 
     #httpresponse {
@@ -59,13 +59,16 @@
 
 <body>
   <!--<div>Icons made by <a href="https://www.flaticon.com/authors/good-ware" title="Good Ware">Good Ware</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>-->
-  <div id="httpresponse">
-    <h1>403</h1>
-    <h2>Maaf! Akses Anda di Batasi.</h2>
-    <br>
-    <button onclick="window.history.back()" class="">Kembali Ke Halaman Sebelumnya</button>
+  <div id="httpresponse" class="min-h-screen flex flex-col items-center justify-center bg-white text-black px-4">
+    <h1 class="text-6xl font-bold mb-2" style="color:black;">403</h1>
+    <h2 class="text-xl font-semibold mb-6" style="color:black;">Maaf! Akses Anda Dibatasi.</h2>
 
+    <button onclick="window.history.back()"
+      class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-black rounded shadow transition">
+      Kembali Ke Halaman Sebelumnya
+    </button>
   </div>
+
   <svg id="policeman" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 610.53 718.27">
     <defs>
       <style>
@@ -196,6 +199,9 @@
       ease: Power1.easeInOut
     });
   </script>
+
+
+
 </body>
 
 </html>

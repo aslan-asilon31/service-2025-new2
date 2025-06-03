@@ -1,27 +1,31 @@
 <?php
 
-namespace App\Livewire\ProductResources;
+namespace App\Livewire\MsBarangResources;
 
-use App\Livewire\ProductResources\Forms\ProductForm;
+use App\Livewire\MsBarangResources\Forms\BarangForm;
 use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 use App\Models\ProductBrand;
 use App\Models\Product;
 use App\Models\ProductCategoryFirst;
+use App\Helpers\Permission\Traits\WithPermission;
 
 class MsBarangCrud extends Component
 {
 
   public function render()
   {
-    return view('livewire.product-resources.product-crud')
+    return view('livewire.barang-resources.barang-crud')
       ->title($this->title);
   }
 
   use \Livewire\WithFileUploads;
   use \Mary\Traits\Toast;
+  use WithPermission;
+
 
   #[\Livewire\Attributes\Locked]
-  public string $title = 'Product';
+  public string $title = 'Barang';
 
   public  $brands = [];
 
@@ -31,7 +35,8 @@ class MsBarangCrud extends Component
   public  $productCategories = [];
 
   #[\Livewire\Attributes\Locked]
-  public string $url = '/products';
+  public string $url = "/barang";
+
 
   #[\Livewire\Attributes\Locked]
   private string $baseFolderName = '/files/images/products';
@@ -55,21 +60,23 @@ class MsBarangCrud extends Component
   public array $options = [];
 
   #[\Livewire\Attributes\Locked]
-  protected $masterModel = \App\Models\Product::class;
+  protected $masterModel = \App\Models\MsBarang::class;
 
-  public ProductForm $masterForm;
+  public BarangForm $masterForm;
 
   public function mount()
   {
+
+
     if ($this->id && $this->readonly) {
-      $this->title .= ' (Show)';
-      $this->show();
+      $this->title .= ' (Tampil)';
+      $this->tampil();
     } else if ($this->id) {
-      $this->title .= ' (Edit)';
-      $this->edit();
+      $this->title .= ' (Ubah)';
+      $this->ubah();
     } else {
-      $this->title .= ' (Create)';
-      $this->create();
+      $this->title .= ' (Buat)';
+      $this->buat();
     }
 
     $this->initialize();
@@ -78,12 +85,15 @@ class MsBarangCrud extends Component
 
   public function initialize() {}
 
-  public function create()
+  public function buat()
   {
+    $this->permission('barang-buat');
     $this->masterForm->reset();
+    $nomorTerakhir = DB::table('ms_barang')->max('nomor') ?? 0;
+    $this->masterForm->nomor = $nomorTerakhir + 1;
   }
 
-  public function store()
+  public function simpan()
   {
     $validatedForm = $this->validate(
       $this->masterForm->rules(),
@@ -91,39 +101,25 @@ class MsBarangCrud extends Component
       $this->masterForm->attributes()
     )['masterForm'];
 
-
     \Illuminate\Support\Facades\DB::beginTransaction();
     try {
 
-      $validatedForm['created_by'] = 'admin';
-      $validatedForm['updated_by'] = 'admin';
-      $validatedForm['is_activated'] = 1;
-      // image_url
-      $folderName = $this->baseFolderName;
-      $now = now()->format('Ymd_His_u');
-      $imageName = $this->baseImageName . '_' . str($validatedForm['name'])->slug('_')  . '_' . 'image' . '_' . $now;
-      $newImageUrl = $validatedForm['image_url'];
-
-      $validatedForm['image_url'] = $this->saveImage(
-        $folderName,
-        $imageName,
-        $newImageUrl,
-      );
-      // ./image_url
+      $validatedForm['dibuat_oleh'] = 'admin';
+      $validatedForm['diupdate_oleh'] = 'admin';
 
       $this->masterModel::create($validatedForm);
       \Illuminate\Support\Facades\DB::commit();
-      $this->redirect('/products', true);
-      $this->success('Data has been stored');
+      $this->redirect('/barang', true);
+      $this->success('Data Berhasil Disimpan');
     } catch (\Throwable $th) {
       \Illuminate\Support\Facades\DB::rollBack();
-      \Log::error('Data product failed to store: ' . $th->getMessage());
+      \Log::error('Data Gagal Disimpan: ' . $th->getMessage());
 
-      $this->error('Data failed to store');
+      $this->error('Data gagal diSimpan');
     }
   }
 
-  public function show()
+  public function tampil()
   {
     $this->isReadonly = true;
     $this->isDisabled = true;
@@ -131,8 +127,10 @@ class MsBarangCrud extends Component
     $this->masterForm->fill($masterData);
   }
 
-  public function edit()
+  public function ubah()
   {
+    $this->permission('barang-ubah');
+
     $this->isReadonly = false;
     $this->isDisabled = false;
     $masterData = $this->masterModel::findOrFail($this->id);
@@ -150,7 +148,7 @@ class MsBarangCrud extends Component
 
     try {
 
-      $validatedForm['updated_by'] = auth()->user()->username ?? null;
+      $validatedForm['diupdate_oleh'] = auth()->user()->username ?? null;
 
       // image_url
       $folderName = $this->baseFolderName;

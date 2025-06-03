@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tr_sp_ambil_rak_detail', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('tr_sp_ambil_rak_detail_id');
-            $table->foreign('tr_sp_ambil_rak_detail_id', 'fk_tr_sp_ambil_rak_detail_id')->references('id')->on('tr_sp_ambil_rak_header')->onDelete('cascade')->onUpdate('cascade');
+            $table->uuid('tr_sp_ambil_rak_header_id');
+            $table->foreign('tr_sp_ambil_rak_header_id', 'fk_tr_sp_ambil_rak_header_id')->references('id')->on('tr_sp_ambil_rak_header')->onDelete('cascade')->onUpdate('cascade');
 
             $table->uuid('ms_barang_id');
             $table->foreign('ms_barang_id')->references('id')->on('ms_barang')->onDelete('cascade')->onUpdate('cascade');

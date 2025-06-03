@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Traits\HasRoles;
 
-class TrSpTandaTerimaServiceHeader extends Model
+class TrTandaTerimaServiceHeader extends Model
 {
     use HasFactory, HasUuids, HasRoles;
 
@@ -19,6 +19,7 @@ class TrSpTandaTerimaServiceHeader extends Model
     protected $keyType = 'string';
     public $incrementing = false;
     protected $guarded = [];
+    protected $table = 'tr_tanda_terima_service_header';
 
     protected function casts(): array
     {

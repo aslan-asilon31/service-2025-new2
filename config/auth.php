@@ -38,7 +38,7 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'ms_pegawai',
         ],
         'admin' => [
             'driver' => 'session',
@@ -78,7 +78,7 @@ return [
         ],
         'ms_pegawai' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\Admin::class),
+            'model' => env('AUTH_MODEL', App\Models\MsPegawai::class),
         ],
         // 'users' => [
         //     'driver' => 'database',

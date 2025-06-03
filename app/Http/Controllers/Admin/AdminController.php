@@ -34,7 +34,7 @@ class AdminController extends Controller
             'password' => $check['password'],
         ];
 
-        if(Auth::guard('admin')->attempt($data)){
+        if (Auth::guard('pegawai')->attempt($data)) {
             return redirect()->route('admin_dashboard');
         } else {
             return redirect()->back()->with('error', 'Invalid credentials');
@@ -43,7 +43,7 @@ class AdminController extends Controller
 
     public function logout()
     {
-        Auth::guard('admin')->logout();
+        Auth::guard('pegawai')->logout();
         return redirect()->route('admin_login')->with('success', 'Logged out successfully');
     }
 
@@ -59,7 +59,7 @@ class AdminController extends Controller
         ]);
 
         $admin = Admin::where('email', $request->email)->first();
-        if(!$admin){
+        if (!$admin) {
             return redirect()->back()->with('error', 'Email not found');
         }
 
@@ -67,21 +67,20 @@ class AdminController extends Controller
         $admin->token = $token;
         $admin->update();
 
-        $link = route('admin_reset_password', [$token,$request->email]);
+        $link = route('admin_reset_password', [$token, $request->email]);
         $subject = 'Reset Password';
         $message = 'Click on the following link to reset your password: <br>';
-        $message .= '<a href="'.$link.'">'.$link.'</a>';
+        $message .= '<a href="' . $link . '">' . $link . '</a>';
 
-        \Mail::to($request->email)->send(new Websitemail($subject,$message));
+        \Mail::to($request->email)->send(new Websitemail($subject, $message));
 
         return redirect()->back()->with('success', 'Reset password link sent to your email');
-
     }
 
     public function reset_password($token, $email)
     {
         $admin = Admin::where('email', $email)->where('token', $token)->first();
-        if(!$admin){
+        if (!$admin) {
             return redirect()->route('admin_login')->with('error', 'Invalid token or email');
         }
         return view('admin.reset_password', compact('token', 'email'));
@@ -111,31 +110,31 @@ class AdminController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:admins,email,'.Auth::guard('admin')->user()->id,
+            'email' => 'required|email|unique:admins,email,' . Auth::guard('admin')->user()->id,
         ]);
 
-        $admin = Admin::where('id',Auth::guard('admin')->user()->id)->first();
+        $admin = Admin::where('id', Auth::guard('admin')->user()->id)->first();
 
-        if($request->photo){
+        if ($request->photo) {
             $request->validate([
                 'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
-            $final_name = 'admin_'.time().'.'.$request->photo->extension();
-            if($admin->photo != '') {
-                unlink(public_path('uploads/'.$admin->photo));
+            $final_name = 'admin_' . time() . '.' . $request->photo->extension();
+            if ($admin->photo != '') {
+                unlink(public_path('uploads/' . $admin->photo));
             }
             $request->photo->move(public_path('uploads'), $final_name);
             $admin->photo = $final_name;
         }
 
-        if($request->password){
+        if ($request->password) {
             $request->validate([
                 'password' => 'required',
                 'confirm_password' => 'required|same:password',
             ]);
             $admin->password = Hash::make($request->password);
         }
-        
+
         $admin->name = $request->name;
         $admin->email = $request->email;
         $admin->update();

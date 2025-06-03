@@ -12,40 +12,33 @@ class MsPegawai  extends  Authenticatable
 {
     use HasFactory, HasUuids,  HasRoles;
 
-    public function newUniqueId(): string
-    {
-        return (string) str()->orderedUuid();
-    }
-
-    protected $fillable = ['nama', 'email', 'password'];
-
-    protected $hidden = ['password'];
-
     protected $keyType = 'string';
     public $incrementing = false;
     public $table = 'ms_pegawai';
     public $timestamps = false;
 
-    protected function casts(): array
+    public function modelHasRoles()
     {
-        return [
-            'tgl_dibuat' => 'datetime: Y-m-d H:i:s',
-            'tgl_diupdate' => 'datetime: Y-m-d H:i:s',
-        ];
+        return $this->hasMany(ModelHasRole::class, 'model_id');
     }
 
-    protected function serializeDate(\DateTimeInterface $date): string
+    public function roles()
     {
-        return $date->format('Y-m-d H:i:s');
+        return $this->belongsToMany(
+            \Spatie\Permission\Models\Role::class,
+            'model_has_roles',
+            'model_id',
+            'role_id'
+        )->where('model_type', self::class);
     }
 
-    public function getAuthPassword()
+    public function permissions()
     {
-        return $this->password;
-    }
-
-    public function getAuthIdentifierName()
-    {
-        return $this->email;
+        return $this->roles()
+            ->with('permissions') // pastikan relasi Role::permissions ada
+            ->get()
+            ->pluck('permissions')
+            ->flatten()
+            ->unique('id');
     }
 }

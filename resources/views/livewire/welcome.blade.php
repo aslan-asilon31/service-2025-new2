@@ -10,27 +10,18 @@
   </x-header>
 
 
-  <tr>
-    <td>Name:</td>
-    <td>
-      <input type="text" name="name" value="{{ Auth::guard('admin')->user()->name }}">
-    </td>
-  </tr>
-  <tr>
-    <td>Email:</td>
-    <td>
-      <input type="text" name="email" value="{{ Auth::guard('admin')->user()->email }}">
-    </td>
-  </tr>
-
-  <!-- TABLE  -->
   <x-card>
-    <x-table :headers="$headers" :rows="$users" :sort-by="$sortBy">
-      @scope('actions', $user)
-        <x-button icon="o-trash" wire:click="delete({{ $user['id'] }})" spinner class="btn-ghost btn-sm text-error" />
-      @endscope
-    </x-table>
+    <div class="space-y-4 p-4">
+      <h2 class="text-xl font-semibold text-gray-800">
+        Selamat Datang, {{ Auth::guard('pegawai')->user()->nama }}
+      </h2>
+      <p class="text-sm text-gray-600">
+        Jabatan: {{ Auth::guard('pegawai')->user()->getRoleNames()->first() ?? 'Tidak diketahui' }}
+      </p>
+
+    </div>
   </x-card>
+
 
   <!-- FILTER DRAWER -->
   <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">

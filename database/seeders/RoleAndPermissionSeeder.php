@@ -12,30 +12,168 @@ class RoleAndPermissionSeeder extends Seeder
     public function run()
     {
         // Membuat Permissions
-        $viewBarang = Permission::create(['name' => 'barang-list']);
-        $createBarang = Permission::create(['name' => 'barang-buat']);
-        $editBarang = Permission::create(['name' => 'barang-ubah']);
-        $deleteBarang = Permission::create(['name' => 'barang-hapus']);
+        $barangList = Permission::create(['name' => 'barang-list']);
+        $barangBuat = Permission::create(['name' => 'barang-buat']);
+        $barangUbah = Permission::create(['name' => 'barang-ubah']);
+        $barangHapus = Permission::create(['name' => 'barang-hapus']);
+        $barangTampil = Permission::create(['name' => 'barang-tampil']);
+
+
+        $cabangList = Permission::create(['name' => 'cabang-list']);
+        $cabangBuat = Permission::create(['name' => 'cabang-buat']);
+        $cabangUbah = Permission::create(['name' => 'cabang-ubah']);
+        $cabangHapus = Permission::create(['name' => 'cabang-hapus']);
+        $cabangTampil = Permission::create(['name' => 'cabang-tampil']);
+
+
+        $gudangList = Permission::create(['name' => 'gudang-list']);
+        $gudangBuat = Permission::create(['name' => 'gudang-buat']);
+        $gudangUbah = Permission::create(['name' => 'gudang-ubah']);
+        $gudangHapus = Permission::create(['name' => 'gudang-hapus']);
+        $gudangTampil = Permission::create(['name' => 'gudang-tampil']);
+
+
+        $pegawaiList = Permission::create(['name' => 'pegawai-list']);
+        $pegawaiBuat = Permission::create(['name' => 'pegawai-buat']);
+        $pegawaiUbah = Permission::create(['name' => 'pegawai-ubah']);
+        $pegawaiHapus = Permission::create(['name' => 'pegawai-hapus']);
+        $pegawaiTampil = Permission::create(['name' => 'pegawai-tampil']);
+
+
+        $pelangganList = Permission::create(['name' => 'pelanggan-list']);
+        $pelangganBuat = Permission::create(['name' => 'pelanggan-buat']);
+        $pelangganUbah = Permission::create(['name' => 'pelanggan-ubah']);
+        $pelangganHapus = Permission::create(['name' => 'pelanggan-hapus']);
+        $pelangganTampil = Permission::create(['name' => 'pelanggan-tampil']);
+
+
+        $rakList = Permission::create(['name' => 'rak-list']);
+        $rakBuat = Permission::create(['name' => 'rak-buat']);
+        $rakUbah = Permission::create(['name' => 'rak-ubah']);
+        $rakHapus = Permission::create(['name' => 'rak-hapus']);
+        $rakTampil = Permission::create(['name' => 'rak-tampil']);
+
+
+        $rakKategoriList = Permission::create(['name' => 'rak-kategori-list']);
+        $rakKategoriBuat = Permission::create(['name' => 'rak-kategori-buat']);
+        $rakKategoriUbah = Permission::create(['name' => 'rak-kategori-ubah']);
+        $rakKategoriHapus = Permission::create(['name' => 'rak-kategori-hapus']);
+        $rakKategoriTampil = Permission::create(['name' => 'rak-kategori-tampil']);
+
+
+        $tandaTerimaServiceList = Permission::create(['name' => 'tanda-terima-service-list']);
+        $tandaTerimaServiceBuat = Permission::create(['name' => 'tanda-terima-service-buat']);
+        $tandaTerimaServiceUbah = Permission::create(['name' => 'tanda-terima-service-ubah']);
+        $tandaTerimaServiceHapus = Permission::create(['name' => 'tanda-terima-service-hapus']);
+        $tandaTerimaServiceTampil = Permission::create(['name' => 'tanda-terima-service-tampil']);
 
         // Membuat Roles
         $adminRole = Role::create(['name' => 'admin']);
         $adminRole->givePermissionTo([
-            $viewBarang,
-            $createBarang,
-            $editBarang,
-            $deleteBarang
+            $barangList,
+            $barangBuat,
+            $barangUbah,
+            $barangHapus,
+            $barangTampil,
+            $cabangList,
+            $cabangBuat,
+            $cabangUbah,
+            $cabangHapus,
+            $cabangTampil,
+            $gudangList,
+            $gudangBuat,
+            $gudangUbah,
+            $gudangHapus,
+            $gudangTampil,
+            $pegawaiList,
+            $pegawaiBuat,
+            $pegawaiUbah,
+            $pegawaiHapus,
+            $pegawaiTampil,
+            $pelangganList,
+            $pelangganBuat,
+            $pelangganUbah,
+            $pelangganHapus,
+            $pelangganTampil,
+            $rakList,
+            $rakBuat,
+            $rakUbah,
+            $rakHapus,
+            $rakTampil,
+            $rakKategoriList,
+            $rakKategoriBuat,
+            $rakKategoriUbah,
+            $rakKategoriHapus,
+            $rakKategoriTampil,
+            $tandaTerimaServiceList,
+            $tandaTerimaServiceBuat,
+            $tandaTerimaServiceUbah,
+            $tandaTerimaServiceHapus,
+            $tandaTerimaServiceTampil,
         ]);
 
         $managerRole = Role::create(['name' => 'manager']);
         $managerRole->givePermissionTo([
-            $viewBarang,
-            $createBarang,
-            $editBarang
+            $barangList,
+            $barangBuat,
+            $barangUbah,
+            $barangTampil,
+            $cabangList,
+            $cabangBuat,
+            $cabangUbah,
+            $cabangTampil,
+            $gudangList,
+            $gudangBuat,
+            $gudangUbah,
+            $gudangTampil,
+            $pegawaiList,
+            $pegawaiBuat,
+            $pegawaiUbah,
+            $pegawaiTampil,
+            $pelangganList,
+            $pelangganBuat,
+            $pelangganUbah,
+            $pelangganTampil,
+            $rakList,
+            $rakBuat,
+            $rakUbah,
+            $rakTampil,
+            $rakKategoriList,
+            $rakKategoriBuat,
+            $rakKategoriUbah,
+            $rakKategoriTampil,
+            $tandaTerimaServiceList,
+            $tandaTerimaServiceBuat,
+            $tandaTerimaServiceUbah,
+            $tandaTerimaServiceTampil,
         ]);
 
         $staffRole = Role::create(['name' => 'staff']);
         $staffRole->givePermissionTo([
-            $viewBarang
+            $barangList,
+            $barangBuat,
+            $barangTampil,
+            $cabangList,
+            $cabangBuat,
+            $cabangTampil,
+            $gudangList,
+            $gudangBuat,
+            $gudangTampil,
+            $pegawaiList,
+            $pegawaiBuat,
+            $pegawaiTampil,
+            $pelangganList,
+            $pelangganBuat,
+            $pelangganTampil,
+            $rakList,
+            $rakBuat,
+            $rakTampil,
+            $rakKategoriList,
+            $rakKategoriBuat,
+            $rakKategoriTampil,
+            $tandaTerimaServiceList,
+            $tandaTerimaServiceBuat,
+            $tandaTerimaServiceTampil,
         ]);
     }
 }

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             MsRakSeeder::class,
             MsRakKategoriSeeder::class,
             MsAksiSeeder::class,
+            RoleAndPermissionSeeder::class,
         ]);
     }
 }

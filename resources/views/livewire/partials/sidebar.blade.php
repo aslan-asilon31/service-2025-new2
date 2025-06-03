@@ -20,19 +20,25 @@
         </x-list-item>
       @endif
 
-      <x-menu-item title="Dashboard" icon="o-chart-bar-square" link="/admin/dashboard1" :class="request()->is('dashboard.list') ? 'active' : ''" />
+      <x-menu-item title="Dashboard" icon="o-chart-bar-square" link="/dashboard1" :class="request()->is('/dashboard1') ? 'active' : ''" />
       <x-menu-separator title="Master Data" icon="o-sparkles" />
-      <x-menu-item title="Barang" icon="o-cube" link="/admin/barang/" :class="request()->is('\barang') ? 'active' : ''" />
-      <x-menu-item title="Cabang" icon="o-building-office" link="/admin/cabang/" :class="request()->is('barang/') ? 'active' : ''" />
-      <x-menu-item title="Gudang" icon="o-home-modern" link="/admin/gudang/" :class="request()->is('gudang/') ? 'active' : ''" />
-      <x-menu-item title="Pegawai" icon="o-user-circle" link="/admin/pegawai/" :class="request()->is('pegawai/') ? 'active' : ''" />
-      <x-menu-item title="Pelanggan" icon="o-users" link="/admin/pelanggan/" :class="request()->is('pelanggan/') ? 'active' : ''" />
-      <x-menu-item title="Rak" icon="o-rectangle-group" link="/admin/rak/" :class="request()->is('rak/') ? 'active' : ''" />
-      <x-menu-item title="Kategori Rak" icon="o-tag" link="/admin/rak-kategori/" :class="request()->is('rak-karegori/') ? 'active' : ''" />
+      <x-menu-item title="Barang" icon="o-cube" link="/barang/" :class="request()->is('\barang') ? 'active' : ''" />
+      <x-menu-item title="Cabang" icon="o-building-office" link="/cabang/" :class="request()->is('barang/') ? 'active' : ''" />
+      <x-menu-item title="Gudang" icon="o-home-modern" link="/gudang/" :class="request()->is('gudang/') ? 'active' : ''" />
+      <x-menu-item title="Pegawai" icon="o-user-circle" link="/pegawai/" :class="request()->is('pegawai/') ? 'active' : ''" />
+      <x-menu-item title="Pelanggan" icon="o-users" link="/pelanggan/" :class="request()->is('pelanggan/') ? 'active' : ''" />
+      <x-menu-item title="Rak" icon="o-rectangle-group" link="/rak/" :class="request()->is('rak/') ? 'active' : ''" />
+      <x-menu-item title="Kategori Rak" icon="o-tag" link="/rak-kategori/" :class="request()->is('rak-karegori/') ? 'active' : ''" />
 
+      <x-menu-separator title="Service" icon="o-sparkles" />
+      <x-menu-item title="Tanda Terima Service" icon="o-cube" link="/tanda-terima-service/" :class="request()->is('\tanda-terima-service') ? 'active' : ''" />
 
+      <x-menu-separator title="Role & Permission" icon="o-sparkles" />
+      <x-menu-item title="Permission" icon="o-cube" link="/Permission/" :class="request()->is('\barang') ? 'active' : ''" />
+
+      <x-menu-separator title="Pengaturan" icon="o-sparkles" />
       <x-menu-sub title="Pengaturan" icon="o-cog-6-tooth">
-        <x-menu-item title="Logout" icon="o-tag" link="/admin/logout/" :class="request()->is('admin-logout/') ? 'active' : ''" />
+        <x-menu-item title="Logout" icon="o-tag" link="/logout/" :class="request()->is('admin-logout/') ? 'active' : ''" />
         <x-menu-item title="Setting" icon-right="o-arrow-long-right" link="####" />
         <x-menu-item title="Backup" icon="o-arrow-long-right" link="####" />
       </x-menu-sub>

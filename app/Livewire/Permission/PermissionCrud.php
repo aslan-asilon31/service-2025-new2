@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\ProductResources;
+namespace App\Livewire\Permission;
 
 use App\Livewire\ProductResources\Forms\ProductForm;
 use Livewire\Component;
@@ -8,7 +8,7 @@ use App\Models\ProductBrand;
 use App\Models\Product;
 use App\Models\ProductCategoryFirst;
 
-class ProductCrud extends Component
+class PermissionCrud extends Component
 {
 
   public function render()
