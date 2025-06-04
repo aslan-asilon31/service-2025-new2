@@ -16,6 +16,10 @@ class ModelHasRole extends Authenticatable
     protected $fillable = ['role_id', 'model_type', 'model_id'];
 
 
+    protected $casts = [
+        'model_id' => 'string',
+    ];
+
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');

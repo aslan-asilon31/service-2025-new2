@@ -27,6 +27,8 @@ class MsRakList extends Component
 
   use Toast;
   use WithPagination;
+  use \App\Helpers\Permission\Traits\HasAksesCabangGudangRak;
+
 
   #[Url(except: '')]
   public ?string $search = '';
@@ -87,6 +89,7 @@ class MsRakList extends Component
 
     $paginator = $query
       ->orderBy(...array_values($this->sortBy))
+      ->whereIn('id', $this->aksesRak()->pluck('id'))
       ->paginate(20);
 
     $start = ($paginator->currentPage() - 1) * $paginator->perPage();

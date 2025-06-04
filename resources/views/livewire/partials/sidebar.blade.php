@@ -34,7 +34,8 @@
       <x-menu-item title="Tanda Terima Service" icon="o-cube" link="/tanda-terima-service/" :class="request()->is('\tanda-terima-service') ? 'active' : ''" />
 
       <x-menu-separator title="Role & Permission" icon="o-sparkles" />
-      <x-menu-item title="Permission" icon="o-cube" link="/Permission/" :class="request()->is('\barang') ? 'active' : ''" />
+      <x-menu-item title="Permission" icon="o-cube" link="/permission/" :class="request()->is('\barang') ? 'active' : ''" />
+      <x-menu-item title="Role" icon="o-cube" link="/role/" :class="request()->is('\barang') ? 'active' : ''" />
 
       <x-menu-separator title="Pengaturan" icon="o-sparkles" />
       <x-menu-sub title="Pengaturan" icon="o-cog-6-tooth">

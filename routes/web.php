@@ -35,6 +35,7 @@ Route::middleware('pegawai')->group(function () {
     Route::get('/pelanggan/edit/{id}', \App\Livewire\MsPelangganResources\PelangganCrud::class)->name('pelanggan.edit');
     Route::get('/pelanggan/show/{id}', \App\Livewire\MsPelangganResources\PelangganCrud::class)->name('pelanggan.show');
 
+    Route::get('/role', \App\Livewire\Role\RoleList::class)->name('role.list');
     Route::get('/permission', \App\Livewire\Permission\PermissionList::class)->name('permission.list');
     Route::get('/barang', \App\Livewire\MsBarangResources\MsBarangList::class)->name('barang.list');
     Route::get('/barang/buat', \App\Livewire\MsBarangResources\MsBarangCrud::class)->name('barang.buat');
@@ -56,8 +57,8 @@ Route::middleware('pegawai')->group(function () {
     Route::get('/rak-kategori', \App\Livewire\MsRakKategoriResources\MsRakKategoriList::class)->name('rak-kategori.list');
 
 
-    Route::get('/tanda-terima-service', \App\Livewire\TandaTerimaServiceResources\TandaTerimaServiceList::class)->name('tanda-terima-service.list');
-    Route::get('/tanda-terima-service/buat', \App\Livewire\TandaTerimaServiceResources\TandaTerimaServiceCrud::class)->name('tanda-terima-service.buat');
+    Route::get('/tanda-terima-service', \App\Livewire\TandaTerimaServiceHeaderResources\TandaTerimaServiceHeaderList::class)->name('tanda-terima-service.list');
+    Route::get('/tanda-terima-service/buat', \App\Livewire\TandaTerimaServiceHeaderResources\TandaTerimaServiceHeaderCrud::class)->name('tanda-terima-service.buat');
 });
 
 

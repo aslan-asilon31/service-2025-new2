@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Livewire\MsGudangResources;
+namespace App\Livewire\MsAksiResources;
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use App\Models\Admin;
 use App\Models\RoleHasPermission;
-use App\Models\MsGudang;
+use App\Models\MsAksi;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 
 
-class MsGudangList extends Component
+class MsAksiList extends Component
 {
 
-  public string $title = "Gudang";
-  public string $url = "/gudang";
+  public string $title = "Aksi";
+  public string $url = "/Aksi";
 
 
   use WithPermission;
@@ -32,7 +32,6 @@ class MsGudangList extends Component
 
   use Toast;
   use WithPagination;
-  use \App\Helpers\Permission\Traits\HasAksesCabangGudangRak;
 
   #[Url(except: '')]
   public ?string $search = '';
@@ -54,7 +53,7 @@ class MsGudangList extends Component
 
   public function mount()
   {
-    $this->permission('gudang-list');
+    $this->permission('aksi-list');
   }
 
   #[Computed]
@@ -73,8 +72,7 @@ class MsGudangList extends Component
   public function rows(): LengthAwarePaginator
   {
 
-
-    $query = MsGudang::query();
+    $query = MsAksi::query();
 
     $query->when($this->search, fn($q) => $q->where('nama', 'like', "%{$this->search}%"))
       ->when(($this->filters['nama'] ?? ''), fn($q) => $q->where('nama', 'like', "%{$this->filters['nama']}%"))
@@ -87,7 +85,6 @@ class MsGudangList extends Component
 
     $paginator = $query
       ->orderBy('nomor', 'asc')
-      ->whereIn('id', $this->aksesGudang()->pluck('id'))
       ->paginate(20);
 
     $start = ($paginator->currentPage() - 1) * $paginator->perPage();
@@ -131,7 +128,7 @@ class MsGudangList extends Component
 
   public function delete()
   {
-    $masterData = MsGudang::findOrFail($this->id);
+    $masterData = MsAksi::findOrFail($this->id);
 
     \Illuminate\Support\Facades\DB::beginTransaction();
     try {
@@ -151,7 +148,7 @@ class MsGudangList extends Component
 
   public function render()
   {
-    return view('livewire.gudang-resources.gudang-list')
+    return view('livewire.aksi-resources.aksi-list')
       ->title($this->title);
   }
 }

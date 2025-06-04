@@ -1,32 +1,27 @@
 <?php
 
-namespace App\Livewire\TandaTerimaServiceResources;
+namespace App\Livewire\MsCabangResources;
 
-use App\Livewire\TandaTerimaServiceResources\Forms\TandaTerimaServiceHeaderForm;
+use App\Livewire\CabangResources\Forms\CabangForm;
 use Livewire\Component;
-use App\Models\MsPegawai;
-use App\Models\TrTandaTerimaServiceHeader;
-use App\Models\ProductBrand;
-use App\Models\Product;
-use App\Models\ProductCategoryFirst;
-use App\Helpers\Permission\Traits\WithPermission;
+use App\Models\CabangBrand;
+use App\Models\Cabang;
+use App\Models\CabangCategoryFirst;
 
-
-class TandaTerimaServiceCrud extends Component
+class CabangCrud extends Component
 {
 
   public function render()
   {
-    return view('livewire.tanda-terima-service-resources.tanda-terima-service-crud')
+    return view('livewire.cabang-resources.cabang-crud')
       ->title($this->title);
   }
 
   use \Livewire\WithFileUploads;
   use \Mary\Traits\Toast;
-  use WithPermission;
 
   #[\Livewire\Attributes\Locked]
-  public string $title = 'Tanda Terima Service';
+  public string $title = 'cabang';
 
   public  $brands = [];
 
@@ -60,14 +55,12 @@ class TandaTerimaServiceCrud extends Component
   public array $options = [];
 
   #[\Livewire\Attributes\Locked]
-  protected $masterModel = \App\Models\TrTandaTerimaServiceHeader::class;
+  protected $masterModel = \App\Models\Cabang::class;
 
-  public TandaTerimaServiceHeaderForm $masterForm;
+  public CabangForm $masterForm;
 
   public function mount()
   {
-
-
     if ($this->id && $this->readonly) {
       $this->title .= ' (Tampil)';
       $this->tampil();
@@ -85,7 +78,10 @@ class TandaTerimaServiceCrud extends Component
 
   public function initialize() {}
 
-
+  public function buat()
+  {
+    $this->masterForm->reset();
+  }
 
   public function store()
   {
@@ -127,16 +123,6 @@ class TandaTerimaServiceCrud extends Component
     }
   }
 
-  public function buat()
-  {
-    $this->permission('tanda-terima-service-buat');
-    // $this->masterForm->reset();
-    // dd('cek1');
-
-    $nomorTerakhir = \Illuminate\Support\Facades\DB::table('ms_barang')->max('nomor') ?? 0;
-    $this->masterForm->nomor = $nomorTerakhir + 1;
-  }
-
   public function tampil()
   {
     $this->isReadonly = true;
@@ -147,8 +133,6 @@ class TandaTerimaServiceCrud extends Component
 
   public function ubah()
   {
-    $this->permission('tanda-terima-service-ubah');
-
     $this->isReadonly = false;
     $this->isDisabled = false;
     $masterData = $this->masterModel::findOrFail($this->id);

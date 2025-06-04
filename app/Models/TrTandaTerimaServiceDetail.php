@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Traits\HasRoles;
 
-class TrSpTandaTerimaServiceDetail extends Model
+class TrTandaTerimaServiceDetail extends Model
 {
     use HasFactory, HasUuids;
 

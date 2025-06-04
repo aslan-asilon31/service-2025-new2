@@ -1,30 +1,24 @@
 <?php
 
-namespace App\Livewire\MsGudangResources;
+namespace App\Livewire\TandaTerimaServiceDetailResources;
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
-use App\Models\Admin;
-use App\Models\RoleHasPermission;
-use App\Models\MsGudang;
+use App\Models\TrTandaTerimaServiceHeader;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Livewire\ProductResources\Forms\ProductForm;
 use Mary\Traits\Toast;
-use App\Helpers\Permission\Traits\WithPermission;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Permission;
+use App\Helpers\Permission\Traits\WithPermission;
 
 
-class MsGudangList extends Component
+class TandaTerimaServiceDetailList extends Component
 {
 
-  public string $title = "Gudang";
-  public string $url = "/gudang";
-
-
-  use WithPermission;
+  public string $title = "Tanda Terima Service Detail List";
+  public string $url = "/tanda-terima-service";
 
 
   #[\Livewire\Attributes\Locked]
@@ -32,7 +26,8 @@ class MsGudangList extends Component
 
   use Toast;
   use WithPagination;
-  use \App\Helpers\Permission\Traits\HasAksesCabangGudangRak;
+  use WithPermission;
+
 
   #[Url(except: '')]
   public ?string $search = '';
@@ -54,7 +49,7 @@ class MsGudangList extends Component
 
   public function mount()
   {
-    $this->permission('gudang-list');
+    $this->permission('tanda-terima-service-list');
   }
 
   #[Computed]
@@ -65,6 +60,7 @@ class MsGudangList extends Component
       ['key' => 'nomor', 'label' => '#', 'sortable' => false, 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-right'],
       ['key' => 'id', 'label' => 'ID', 'sortBy' => 'id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
       ['key' => 'nama', 'label' => 'Nama', 'sortBy' => 'nama', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'status', 'label' => 'Status', 'sortBy' => 'status', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
       ['key' => 'tgl_dibuat', 'label' => 'Created At', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'tgl_dibuat', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center']
     ];
   }
@@ -73,12 +69,11 @@ class MsGudangList extends Component
   public function rows(): LengthAwarePaginator
   {
 
-
-    $query = MsGudang::query();
+    $query = TrTandaTerimaServiceHeader::query();
 
     $query->when($this->search, fn($q) => $q->where('nama', 'like', "%{$this->search}%"))
       ->when(($this->filters['nama'] ?? ''), fn($q) => $q->where('nama', 'like', "%{$this->filters['nama']}%"))
-      ->when(($this->filters['nomor'] ?? ''), fn($q) => $q->where('nomor', 'like', "%{$this->filters['nomor']}%"))
+      ->when(($this->filters['status'] ?? ''), fn($q) => $q->where('status', $this->filters['status']))
       ->when(($this->filters['tgl_dibuat'] ?? ''), function ($q) {
         $dateTime = $this->filters['tgl_dibuat'];
         $dateOnly = substr($dateTime, 0, 10);
@@ -87,7 +82,6 @@ class MsGudangList extends Component
 
     $paginator = $query
       ->orderBy('nomor', 'asc')
-      ->whereIn('id', $this->aksesGudang()->pluck('id'))
       ->paginate(20);
 
     $start = ($paginator->currentPage() - 1) * $paginator->perPage();
@@ -131,7 +125,7 @@ class MsGudangList extends Component
 
   public function delete()
   {
-    $masterData = MsGudang::findOrFail($this->id);
+    $masterData = TrTandaTerimaServiceHeader::findOrFail($this->id);
 
     \Illuminate\Support\Facades\DB::beginTransaction();
     try {
@@ -151,7 +145,10 @@ class MsGudangList extends Component
 
   public function render()
   {
-    return view('livewire.gudang-resources.gudang-list')
+
+
+
+    return view('livewire.tanda-terima-service-header-resources.tanda-terima-service-header-list')
       ->title($this->title);
   }
 }

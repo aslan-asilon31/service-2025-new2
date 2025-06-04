@@ -13,11 +13,17 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+
+
+
         return view('admin.dashboard');
     }
 
     public function login()
     {
+        if (Auth::guard('pegawai')->check()) {
+            return redirect()->route('admin_dashboard');
+        }
         return view('admin.login');
     }
 

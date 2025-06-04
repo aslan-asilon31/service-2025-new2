@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\TandaTerimaServiceResources;
+namespace App\Livewire\TandaTerimaServiceHeaderResources;
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\Permission\Traits\WithPermission;
 
 
-class TandaTerimaServiceList extends Component
+class TandaTerimaServiceHeaderList extends Component
 {
 
-  public string $title = "Tanda Terima Service";
+  public string $title = "Tanda Terima Service List";
   public string $url = "/tanda-terima-service";
 
 
@@ -40,10 +40,8 @@ class TandaTerimaServiceList extends Component
   public array $filters = [];
   public array $filterForm = [
     'nama' => '',
-    'selling_price' => '',
-    'image_url' => '',
-    'is_activated' => '',
     'tgl_dibuat' => '',
+    'status' => '',
   ];
 
 
@@ -59,9 +57,11 @@ class TandaTerimaServiceList extends Component
       ['key' => 'action', 'label' => 'Action', 'sortable' => false, 'class' => 'whitespace-nowrap border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
       ['key' => 'nomor', 'label' => '#', 'sortable' => false, 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-right'],
       ['key' => 'id', 'label' => 'ID', 'sortBy' => 'id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
-      ['key' => 'nama', 'label' => 'Nama', 'sortBy' => 'nama', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'nama', 'label' => 'Tanda Terima Service', 'sortBy' => 'nama', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'nama_pelanggan', 'label' => 'Pelanggan', 'sortBy' => 'nama_pelanggan', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'nama_cabang', 'label' => 'Cabang', 'sortBy' => 'nama_cabang', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
       ['key' => 'status', 'label' => 'Status', 'sortBy' => 'status', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
-      ['key' => 'tgl_dibuat', 'label' => 'Created At', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'tgl_dibuat', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center']
+      ['key' => 'tgl_dibuat', 'label' => 'Tanggal Dibuat', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'tgl_dibuat', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center']
     ];
   }
 
@@ -69,10 +69,12 @@ class TandaTerimaServiceList extends Component
   public function rows(): LengthAwarePaginator
   {
 
-    $query = TrTandaTerimaServiceHeader::query();
+    $query = TrTandaTerimaServiceHeader::with('msPelanggan');
 
     $query->when($this->search, fn($q) => $q->where('nama', 'like', "%{$this->search}%"))
       ->when(($this->filters['nama'] ?? ''), fn($q) => $q->where('nama', 'like', "%{$this->filters['nama']}%"))
+      ->when(($this->filters['nama_pelanggan'] ?? ''), fn($q) => $q->where('nama_pelanggan', 'like', "%{$this->filters['nama_pelanggan']}%"))
+      ->when(($this->filters['nama_cabang'] ?? ''), fn($q) => $q->where('nama_cabang', 'like', "%{$this->filters['nama_cabang']}%"))
       ->when(($this->filters['status'] ?? ''), fn($q) => $q->where('status', $this->filters['status']))
       ->when(($this->filters['tgl_dibuat'] ?? ''), function ($q) {
         $dateTime = $this->filters['tgl_dibuat'];
@@ -87,6 +89,8 @@ class TandaTerimaServiceList extends Component
     $start = ($paginator->currentPage() - 1) * $paginator->perPage();
 
     $paginator->getCollection()->transform(function ($item, $key) use ($start) {
+      $item->nama_pelanggan = optional($item->msPelanggan)->nama;
+      $item->nama_cabang = optional($item->msCabang)->nama;
       return $item;
     });
 
@@ -146,9 +150,7 @@ class TandaTerimaServiceList extends Component
   public function render()
   {
 
-
-
-    return view('livewire.gudang-resources.gudang-list')
+    return view('livewire.tanda-terima-service-header-resources.tanda-terima-service-header-list')
       ->title($this->title);
   }
 }

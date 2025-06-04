@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('pegawai_akses_cabang', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('model_id');
-            $table->string('model_tipe');
+            $table->uuid('ms_pegawai_id');
+            $table->foreign('ms_pegawai_id')->references('id')->on('ms_pegawai')->onDelete('cascade')->onUpdate('cascade');
+
+            $table->uuid('ms_cabang_id');
+            $table->foreign('ms_cabang_id')->references('id')->on('ms_cabang')->onDelete('cascade')->onUpdate('cascade');
+
             $table->integer('nomor');
             $table->string('dibuat_oleh', 255)->nullable()->index();
             $table->string('diupdate_oleh', 255)->nullable()->index();

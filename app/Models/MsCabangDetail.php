@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MsCabang extends Model
+class MsCabangDetail extends Model
 {
     use HasFactory, HasUuids;
 
@@ -16,7 +16,7 @@ class MsCabang extends Model
     }
     protected $guarded = [];
     protected $keyType = 'string';
-    protected $table = 'ms_cabang';
+    protected $table = 'ms_cabang_detail';
     public $incrementing = false;
 
     protected function casts(): array
@@ -32,19 +32,8 @@ class MsCabang extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function msCabangDetails()
+    public function msCabangs()
     {
-        return $this->hasMany(\App\Models\MsCabangDetail::class, 'ms_cabang_id', 'id');
-    }
-
-    public function pegawaiAksesCabang()
-    {
-        return $this->belongsTo(\App\Models\PegawaiAksesCabang::class);
-    }
-
-
-    public function trTandaTerimaServiceHeader()
-    {
-        return $this->belongsTo(TrTandaTerimaServiceHeader::class, 'ms_cabang_id', 'id');
+        return $this->belongsTo(MsCabang::class);
     }
 }

@@ -37,12 +37,9 @@ trait WithPermission
             abort(403, 'Permission denied: ' . $permissionId);
         }
 
-
         // if (!in_array($permissionId, $permissionNames)) {
         //     abort(403, 'Unauthorized: missing permission "' . $permissionId . '"');
         // }
-
-
 
         return true;
     }

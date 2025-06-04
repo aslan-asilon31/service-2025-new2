@@ -43,4 +43,14 @@ class TrTandaTerimaServiceHeader extends Model
     {
         return $this->hasMany(MsCabang::class);
     }
+
+    public function msPelanggan()
+    {
+        return $this->hasOne(MsPelanggan::class, 'id', 'ms_pelanggan_id');
+    }
+
+    public function msCabang()
+    {
+        return $this->hasOne(MsCabang::class, 'id', 'ms_cabang_id');
+    }
 }

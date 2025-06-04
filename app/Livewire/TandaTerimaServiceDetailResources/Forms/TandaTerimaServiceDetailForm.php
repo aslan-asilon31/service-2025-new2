@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Livewire\TandaTerimaServiceResources\Forms;
+namespace App\Livewire\TandaTerimaServiceDetailResources\Forms;
 
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\Form;
 
-class TandaTerimaServiceHeaderForm extends Form
+class TandaTerimaServiceDetailForm extends Form
 {
   public string|null $nama = null;
   public int|null $nomor = null;

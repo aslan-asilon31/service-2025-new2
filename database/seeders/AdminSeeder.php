@@ -13,6 +13,9 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
+        $now = \Carbon\Carbon::now();
+
+
         // Ambil nomor terakhir
         $lastNumber = MsPegawai::max('nomor') ?? 0;
 
@@ -22,6 +25,8 @@ class AdminSeeder extends Seeder
         $admin->email = 'admin@gmail.com';
         $admin->password = Hash::make('password');
         $admin->nomor = $lastNumber + 1;
+        $admin->tgl_dibuat = $now;
+        $admin->tgl_diupdate = $now;
         $admin->status = 'aktif';
         $admin->save();
 
@@ -31,6 +36,8 @@ class AdminSeeder extends Seeder
         $manager->email = 'manager@gmail.com';
         $manager->password = Hash::make('password');
         $manager->nomor = $lastNumber + 2;
+        $admin->tgl_dibuat = $now;
+        $admin->tgl_diupdate = $now;
         $manager->status = 'aktif';
         $manager->save();
 
@@ -40,6 +47,8 @@ class AdminSeeder extends Seeder
         $staff->email = 'staff@gmail.com';
         $staff->password = Hash::make('password');
         $staff->nomor = $lastNumber + 3;
+        $admin->tgl_dibuat = $now;
+        $admin->tgl_diupdate = $now;
         $staff->status = 'aktif';
         $staff->save();
     }

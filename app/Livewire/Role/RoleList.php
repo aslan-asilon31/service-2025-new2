@@ -1,60 +1,55 @@
 <?php
 
-namespace App\Livewire\MsGudangResources;
+namespace App\Livewire\Role;
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
-use App\Models\Admin;
+use App\Models\Role;
 use App\Models\RoleHasPermission;
-use App\Models\MsGudang;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Livewire\ProductResources\Forms\ProductForm;
+use App\Livewire\RoleResources\Forms\RoleForm;
 use Mary\Traits\Toast;
 use App\Helpers\Permission\Traits\WithPermission;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 
 
-class MsGudangList extends Component
+class RoleList extends Component
 {
 
-  public string $title = "Gudang";
-  public string $url = "/gudang";
-
+  public string $title = "Roles";
+  public string $url = "/role";
 
   use WithPermission;
-
 
   #[\Livewire\Attributes\Locked]
   public $id;
 
   use Toast;
   use WithPagination;
-  use \App\Helpers\Permission\Traits\HasAksesCabangGudangRak;
 
   #[Url(except: '')]
   public ?string $search = '';
 
   public bool $filterDrawer;
 
-  public array $sortBy = ['column' => 'nama', 'direction' => 'desc'];
+  public array $sortBy = ['column' => 'name', 'direction' => 'desc'];
 
   #[Url(except: '')]
   public array $filters = [];
   public array $filterForm = [
-    'nama' => '',
-    'selling_price' => '',
-    'image_url' => '',
-    'is_activated' => '',
-    'tgl_dibuat' => '',
+    'name' => '',
+    'guard_name' => '',
+    'created_at' => '',
+    'updated_at' => '',
   ];
 
 
   public function mount()
   {
-    $this->permission('gudang-list');
+    // $this->permission('permission-list');
   }
 
   #[Computed]
@@ -62,10 +57,11 @@ class MsGudangList extends Component
   {
     return [
       ['key' => 'action', 'label' => 'Action', 'sortable' => false, 'class' => 'whitespace-nowrap border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
-      ['key' => 'nomor', 'label' => '#', 'sortable' => false, 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-right'],
+      ['key' => 'no_urut', 'label' => '#', 'sortable' => false, 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-right'],
       ['key' => 'id', 'label' => 'ID', 'sortBy' => 'id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
-      ['key' => 'nama', 'label' => 'Nama', 'sortBy' => 'nama', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
-      ['key' => 'tgl_dibuat', 'label' => 'Created At', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'tgl_dibuat', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center']
+      ['key' => 'name', 'label' => 'Name', 'sortBy' => 'name', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'created_at', 'label' => 'Created At', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'created_at', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
+      ['key' => 'updated_at', 'label' => 'Updated At', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'updated_at', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center']
     ];
   }
 
@@ -73,26 +69,41 @@ class MsGudangList extends Component
   public function rows(): LengthAwarePaginator
   {
 
+    $query = Role::query();
 
-    $query = MsGudang::query();
-
-    $query->when($this->search, fn($q) => $q->where('nama', 'like', "%{$this->search}%"))
-      ->when(($this->filters['nama'] ?? ''), fn($q) => $q->where('nama', 'like', "%{$this->filters['nama']}%"))
-      ->when(($this->filters['nomor'] ?? ''), fn($q) => $q->where('nomor', 'like', "%{$this->filters['nomor']}%"))
-      ->when(($this->filters['tgl_dibuat'] ?? ''), function ($q) {
-        $dateTime = $this->filters['tgl_dibuat'];
+    $query->when(
+      $this->search,
+      fn($q) =>
+      $q->where('name', 'like', "%{$this->search}%")
+    )
+      ->when(($this->filters['name'] ?? ''),
+        fn($q) =>
+        $q->where('name', 'like', "%{$this->filters['name']}%")
+      )
+      ->when(($this->filters['guard_name'] ?? ''),
+        fn($q) =>
+        $q->where('guard_name', 'like', "%{$this->filters['guard_name']}%")
+      )
+      ->when(($this->filters['updated_at'] ?? ''), function ($q) {
+        $dateTime = $this->filters['updated_at'];
         $dateOnly = substr($dateTime, 0, 10);
-        $q->whereDate('tgl_dibuat', $dateOnly);
+        $q->whereDate('updated_at', $dateOnly);
+      })
+      ->when(($this->filters['created_at'] ?? ''), function ($q) {
+        $dateTime = $this->filters['created_at'];
+        $dateOnly = substr($dateTime, 0, 10);
+        $q->whereDate('created_at', $dateOnly);
       });
 
+
     $paginator = $query
-      ->orderBy('nomor', 'asc')
-      ->whereIn('id', $this->aksesGudang()->pluck('id'))
+      ->orderBy(...array_values($this->sortBy))
       ->paginate(20);
 
     $start = ($paginator->currentPage() - 1) * $paginator->perPage();
 
     $paginator->getCollection()->transform(function ($item, $key) use ($start) {
+      $item->no_urut = $start + $key + 1;
       return $item;
     });
 
@@ -103,13 +114,13 @@ class MsGudangList extends Component
   {
     $validatedFilters = $this->validate(
       [
-        'filterForm.nama' => 'nullable|string',
+        'filterForm.name' => 'nullable|string',
         'filterForm.status' => 'nullable|integer',
         'filterForm.tgl_dibuat' => 'nullable|string',
       ],
       [],
       [
-        'filterForm.nama' => 'Nama',
+        'filterForm.name' => 'Name',
         'filterForm.status' => 'Status',
         'filterForm.tgl_dibuat' => 'Tanggal Dibuat',
       ]
@@ -131,7 +142,7 @@ class MsGudangList extends Component
 
   public function delete()
   {
-    $masterData = MsGudang::findOrFail($this->id);
+    $masterData = Role::findOrFail($this->id);
 
     \Illuminate\Support\Facades\DB::beginTransaction();
     try {
@@ -151,7 +162,7 @@ class MsGudangList extends Component
 
   public function render()
   {
-    return view('livewire.gudang-resources.gudang-list')
+    return view('livewire.permission-resources.permission-list')
       ->title($this->title);
   }
 }
