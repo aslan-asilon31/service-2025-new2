@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Role;
 
-use App\Livewire\ProductResources\Forms\ProductForm;
+use App\Livewire\RoleResources\Forms\ProductForm;
 use Livewire\Component;
 use App\Models\ProductBrand;
 use App\Models\Product;

@@ -367,21 +367,7 @@ class TandaTerimaServiceHeaderCrud extends Component
       ->get()
       ->merge($selectedOption);
 
-    // $searchResults = \App\Models\MsPelanggan::query()
-    //   ->where('nama', 'like', "%$value%")
-    //   ->orderBy('tgl_dibuat')
-    //   ->limit(20)
-    //   ->get();
-
-    // $this->pelangganSearchable = $selectedOption
-    //   ->merge($searchResults)
-    //   ->unique('id')
-    //   ->map(fn($item) => [
-    //     'value' => $item->id,
-    //     'label' => $item->nama,
-    //   ])
-    //   ->values()
-    //   ->toArray();
+    
 
 
   }
