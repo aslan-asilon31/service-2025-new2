@@ -19,6 +19,7 @@ class TrTandaTerimaServiceDetail extends Model
     protected $keyType = 'string';
     public $incrementing = false;
     protected $guarded = [];
+    protected $table = 'tr_tanda_terima_service_detail';
 
     protected function casts(): array
     {
@@ -35,6 +36,6 @@ class TrTandaTerimaServiceDetail extends Model
 
     public function trSpTandaTerimaServiceHeader()
     {
-        return $this->belongsTo(TrTandaTerimaServiceHeader::class);
+        return $this->belongsTo(TrTandaTerimaServiceHeader::class, 'tr_tanda_terima_service_header_id', 'id');
     }
 }

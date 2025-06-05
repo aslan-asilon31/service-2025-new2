@@ -14,11 +14,10 @@ trait WithPermission
         $user = Auth::guard('pegawai')->user();
 
         if (!$user) {
-            return $this->unauthorizedPermission('User not authenticated.');
+            return $this->unauthorizedPermission('Anda tidak diizinkan untuk masuk.');
         }
 
         // $permissionNames = $user->getAllPermissions()->pluck('nama')->toArray();
-
 
         $permissionNames = DB::table('model_has_roles')
             ->join('role_has_permissions', 'model_has_roles.role_id', '=', 'role_has_permissions.role_id')
@@ -30,16 +29,12 @@ trait WithPermission
 
 
         if (empty($permissionNames)) {
-            return $this->unauthorizedPermission('No permissions assigned to this user.');
+            return $this->unauthorizedPermission('Anda tidak diizinkan untuk masuk.');
         }
 
         if (!in_array($permissionId, $permissionNames)) {
-            abort(403, 'Permission denied: ' . $permissionId);
+            abort(403, 'Anda tidak diizinkan untuk masuk ke halaman ini');
         }
-
-        // if (!in_array($permissionId, $permissionNames)) {
-        //     abort(403, 'Unauthorized: missing permission "' . $permissionId . '"');
-        // }
 
         return true;
     }

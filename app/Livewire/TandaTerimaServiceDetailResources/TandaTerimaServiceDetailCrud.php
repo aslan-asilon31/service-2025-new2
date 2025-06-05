@@ -67,7 +67,6 @@ class TandaTerimaServiceDetailCrud extends Component
   public function mount()
   {
 
-
     if ($this->id && $this->readonly) {
       $this->title .= ' (Tampil)';
       $this->tampil();

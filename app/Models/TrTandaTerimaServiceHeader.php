@@ -34,10 +34,7 @@ class TrTandaTerimaServiceHeader extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function trSpTandaTerimaSuratPerintahServiceDetail()
-    {
-        return $this->belongsTo(TrSpServiceDetail::class);
-    }
+
 
     public function msCabangs()
     {
@@ -52,5 +49,10 @@ class TrTandaTerimaServiceHeader extends Model
     public function msCabang()
     {
         return $this->hasOne(MsCabang::class, 'id', 'ms_cabang_id');
+    }
+
+    public function trTandaTerimaSuratPerintahServiceDetail()
+    {
+        return $this->hasMany(TrTandaTerimaServiceDetail::class, 'id', 'tr_tanda_terima_service_header_id');
     }
 }

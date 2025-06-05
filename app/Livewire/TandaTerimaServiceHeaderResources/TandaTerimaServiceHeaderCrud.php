@@ -3,14 +3,16 @@
 namespace App\Livewire\TandaTerimaServiceHeaderResources;
 
 use App\Livewire\TandaTerimaServiceHeaderResources\Forms\TandaTerimaServiceHeaderForm;
+use App\Livewire\TandaTerimaServiceDetailResources\Forms\TandaTerimaServiceDetailForm;
+
 use Livewire\Component;
-use App\Models\MsPegawai;
-use App\Models\TrTandaTerimaServiceHeader;
-use App\Models\ProductBrand;
-use App\Models\Product;
-use App\Models\ProductCategoryFirst;
+use Livewire\Attributes\Computed;
+use App\Models\TrTandaTerimaServiceDetail;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Helpers\Permission\Traits\WithPermission;
+use App\Helpers\FormHook\Traits\WithTandaTerimaService;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
 
 class TandaTerimaServiceHeaderCrud extends Component
 {
@@ -24,17 +26,27 @@ class TandaTerimaServiceHeaderCrud extends Component
   use \Livewire\WithFileUploads;
   use \Mary\Traits\Toast;
   use WithPermission;
+  use WithTandaTerimaService;
+
+  public \Illuminate\Support\Collection $pelangganSearchable;
+
 
   #[\Livewire\Attributes\Locked]
   public string $title = 'Tanda Terima Service ';
+
+
+  #[Url(except: '')]
+  public ?string $search = '';
 
   public  $brands = [];
 
   public $selectedBrandId = '';
   public $details = [];
   public $selectedProductCategoryFirstId = '';
-  public  $productCategoryFirsts = [];
-  public  $productCategories = [];
+  public $productCategoryFirsts = [];
+  public $productCategories = [];
+  public $header;
+  public $detailId = null;
 
   #[\Livewire\Attributes\Locked]
   public string $url = '/products';
@@ -67,7 +79,11 @@ class TandaTerimaServiceHeaderCrud extends Component
   protected $detailModel = \App\Models\TrTandaTerimaServiceDetail::class;
 
 
-  public TandaTerimaServiceHeaderForm $masterForm;
+  // #[\Livewire\Attributes\Session]
+  // public $search;
+
+  public TandaTerimaServiceHeaderForm $headerForm;
+  public TandaTerimaServiceDetailForm $detailForm;
 
   public function mount()
   {
@@ -87,17 +103,18 @@ class TandaTerimaServiceHeaderCrud extends Component
   }
 
 
-  public function initialize() {}
-
-
+  public function initialize()
+  {
+    session()->put('TandaTerimaServiceHeaderId', $this->id);
+  }
 
   public function simpan()
   {
     $validatedForm = $this->validate(
-      $this->masterForm->rules(),
+      $this->headerForm->rules(),
       [],
-      $this->masterForm->attributes()
-    )['masterForm'];
+      $this->headerForm->attributes()
+    )['headerForm'];
 
 
     \Illuminate\Support\Facades\DB::beginTransaction();
@@ -134,11 +151,10 @@ class TandaTerimaServiceHeaderCrud extends Component
   public function buat()
   {
     $this->permission('tanda-terima-service-buat');
-    $this->masterForm->reset();
+    $this->headerForm->reset();
 
     $nomorTerakhir = \Illuminate\Support\Facades\DB::table('ms_barang')->max('nomor') ?? 0;
-    $this->masterForm->nomor = $nomorTerakhir + 1;
-
+    $this->headerForm->nomor = $nomorTerakhir + 1;
 
     // ----------------------------------------------------------------
 
@@ -203,53 +219,63 @@ class TandaTerimaServiceHeaderCrud extends Component
     $this->details = $details;
   }
 
+  public function buatDetail()
+  {
+    $this->detailForm->reset();
+    $this->bukaModal();
+  }
+
+  public function ubahDetail($detailIndex)
+  {
+    $this->isReadonly = false;
+    $this->isDisabled = false;
+    $masterData = $this->detailModel::findOrFail($detailIndex);
+    $this->detailForm->fill($masterData);
+    $this->modalDetail = true;
+  }
+
   public function tampil()
   {
     $this->isReadonly = true;
     $this->isDisabled = true;
     $masterData = $this->headerModel::findOrFail($this->id);
-    $this->masterForm->fill($masterData);
+    $this->headerForm->fill($masterData);
   }
 
   public function ubah()
   {
     $this->permission('tanda-terima-service-ubah');
-
     $this->isReadonly = false;
     $this->isDisabled = false;
     $masterData = $this->headerModel::findOrFail($this->id);
-    $this->masterForm->fill($masterData);
+    $this->headerForm->fill($masterData);
   }
 
   public function update()
   {
-    $validatedForm = $this->validate(
-      $this->masterForm->rules(),
+
+    $validatedHeaderForm = $this->validate(
+      $this->headerForm->rules(),
       [],
-      $this->masterForm->attributes()
-    )['masterForm'];
-    $masterData = $this->headerModel::findOrFail($this->id);
+      $this->headerForm->attributes()
+    )['headerForm'];
+
+    $this->header = $this->headerModel::findOrFail($this->id);
 
     try {
+      $this->authorize('updateStatusDraf', [$this->header, $validatedHeaderForm['status']]);
+    } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+      throw new \Illuminate\Auth\Access\AuthorizationException('Anda tidak diizinkan untuk mengubah status ke ' . $validatedHeaderForm['status']);
+    }
 
+    // $this->authorize('updateStatus', [$this->header, $validatedHeaderForm['status']]);
+
+    $masterData = $this->headerModel::findOrFail($this->id);
+    try {
       $validatedForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama ?? null;
-
-      // image_url
-      $folderName = $this->baseFolderName;
-      $now = now()->format('Ymd_His_u');
-      $imageName = $this->baseImageName . '_' . str($validatedForm['name'])->slug('_')  . '_' . 'image' . '_' . $now;
-      $newImageUrl = $validatedForm['image_url'];
-
-      $validatedForm['image_url'] = $this->saveImage(
-        $folderName,
-        $imageName,
-        $newImageUrl,
-      );
-      // ./image_url
 
       $masterData->update($validatedForm);
       $this->redirect('/products', true);
-
 
       $this->success('Data has been updated');
     } catch (\Throwable $e) {
@@ -260,7 +286,7 @@ class TandaTerimaServiceHeaderCrud extends Component
     }
   }
 
-  public function delete()
+  public function hapus()
   {
     $masterData = $this->headerModel::findOrFail($this->id);
 
@@ -278,5 +304,85 @@ class TandaTerimaServiceHeaderCrud extends Component
       \Illuminate\Support\Facades\DB::rollBack();
       $this->error('Data failed to delete');
     }
+  }
+
+  public array $sortBy = ['column' => 'nama', 'direction' => 'desc'];
+
+  #[Computed]
+  public function headers(): array
+  {
+    return [
+      ['key' => 'action', 'label' => 'Action', 'sortable' => false, 'class' => 'whitespace-nowrap border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
+      ['key' => 'nomor', 'label' => '#', 'sortable' => false, 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-right'],
+      ['key' => 'id', 'label' => 'ID', 'sortBy' => 'id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'tr_tanda_terima_service_header_id', 'label' => 'Tanda Terima Service Header ID', 'sortBy' => 'tr_tanda_terima_service_header_id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'ms_barang_id', 'label' => 'Barang ID', 'sortBy' => 'ms_barang_id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'ms_rak_id', 'label' => 'Rak ID', 'sortBy' => 'ms_rak_id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'catatan', 'label' => 'Catatan', 'sortBy' => 'catatan', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
+      ['key' => 'qty', 'label' => 'Quantity', 'sortBy' => 'qty', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
+      ['key' => 'status', 'label' => 'Status', 'sortBy' => 'status', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
+      ['key' => 'tgl_dibuat', 'label' => 'Created At', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'tgl_dibuat', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center']
+    ];
+  }
+
+  #[Computed]
+  public function rows(): LengthAwarePaginator
+  {
+
+    $query = TrTandaTerimaServiceDetail::query();
+    $query->when($this->search, fn($q) => $q->where('id', 'like', "%{$this->search}%"))
+      ->when(($this->filters['id'] ?? ''), fn($q) => $q->where('id', 'like', "%{$this->filters['id']}%"))
+      ->when(($this->filters['tr_tanda_terima_service_header_id'] ?? ''), fn($q) => $q->where('tr_tanda_terima_service_header_id', 'like', "%{$this->filters['tr_tanda_terima_service_header_id']}%"))
+      ->when(($this->filters['ms_barang_id'] ?? ''), fn($q) => $q->where('ms_barang_id', 'like', "%{$this->filters['ms_barang_id']}%"))
+      ->when(($this->filters['ms_rak_id'] ?? ''), fn($q) => $q->where('ms_rak_id', 'like', "%{$this->filters['ms_rak_id']}%"))
+      ->when(($this->filters['catatan'] ?? ''), fn($q) => $q->where('catatan', 'like', "%{$this->filters['catatan']}%"))
+      ->when(($this->filters['qty'] ?? ''), fn($q) => $q->where('qty', $this->filters['qty']))
+      ->when(($this->filters['tgl_dibuat'] ?? ''), function ($q) {
+        $dateTime = $this->filters['tgl_dibuat'];
+        $dateOnly = substr($dateTime, 0, 10);
+        $q->whereDate('tgl_dibuat', $dateOnly);
+      });
+
+    $paginator = $query
+      // ->orderBy('nomor', 'asc')
+      ->where('tr_tanda_terima_service_header_id', session('TandaTerimaServiceHeaderId'))
+      ->paginate(20);
+
+    $start = ($paginator->currentPage() - 1) * $paginator->perPage();
+
+    $paginator->getCollection()->transform(function ($item, $key) use ($start) {
+      return $item;
+    });
+
+    return $paginator;
+  }
+
+  public function searchPelanggan(string $value = '')
+  {
+    $selectedOption = \App\Models\MsPelanggan::where('id', $this->headerForm->ms_pelanggan_id)->get();
+
+    $this->pelangganSearchable = \App\Models\MsPelanggan::query()
+      ->where('nama', 'like', "%$value%")
+      ->orderBy('tgl_dibuat')
+      ->get()
+      ->merge($selectedOption);
+
+    // $searchResults = \App\Models\MsPelanggan::query()
+    //   ->where('nama', 'like', "%$value%")
+    //   ->orderBy('tgl_dibuat')
+    //   ->limit(20)
+    //   ->get();
+
+    // $this->pelangganSearchable = $selectedOption
+    //   ->merge($searchResults)
+    //   ->unique('id')
+    //   ->map(fn($item) => [
+    //     'value' => $item->id,
+    //     'label' => $item->nama,
+    //   ])
+    //   ->values()
+    //   ->toArray();
+
+
   }
 }

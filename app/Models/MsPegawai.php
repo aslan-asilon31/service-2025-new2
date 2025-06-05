@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
-use App\Helpers\Permission\Traits\HasAksesCabangGudangRak;
+use App\Helpers\Permission\Traits\HasAccess;
 
 class MsPegawai  extends  Authenticatable
 {
-    use HasFactory, HasUuids,  HasRoles, HasAksesCabangGudangRak;
+    use HasFactory, HasUuids,  HasRoles, HasAccess;
 
     protected $keyType = 'string';
     public $incrementing = false;

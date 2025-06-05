@@ -40,6 +40,7 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 1,
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -53,6 +54,7 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 2,
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -66,6 +68,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 3,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -79,6 +83,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 4,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -92,6 +98,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 5,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -105,6 +113,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 6,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -118,6 +128,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 7,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -131,6 +143,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 8,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -144,6 +158,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 9,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -157,6 +173,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 10,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -170,6 +188,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 11,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -183,6 +203,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 12,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),
@@ -196,6 +218,8 @@ class TandaTerimaServiceDetailSeeder extends Seeder
                 'ms_rak_id' => $getRandomRakId(),
                 'catatan' => 'Kerusakan detail ',
                 'qty' => 1,
+                'nomor' => 13,
+
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
                 'tgl_dibuat' => Carbon::now(),

@@ -2,7 +2,7 @@
 
 namespace App\Livewire\MsPelangganResources;
 
-use App\Livewire\PelangganResources\Forms\PelangganForm;
+use App\Livewire\MsPelangganResources\Forms\PelangganForm;
 use Livewire\Component;
 use App\Models\PelangganBrand;
 use App\Models\Pelanggan;

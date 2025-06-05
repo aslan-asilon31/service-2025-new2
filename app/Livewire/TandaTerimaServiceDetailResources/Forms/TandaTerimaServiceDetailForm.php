@@ -7,7 +7,9 @@ use Livewire\Form;
 
 class TandaTerimaServiceDetailForm extends Form
 {
-  public string|null $nama = null;
+  public string|null $id = null;
+  public string|null $catatan = null;
+  public int|null $qty = null;
   public int|null $nomor = null;
   public string|null $memo = null;
   public string|null $dibuat_oleh = null;
@@ -16,7 +18,9 @@ class TandaTerimaServiceDetailForm extends Form
   public function rules(string|null $id = null): array
   {
     return [
-      'masterForm.nama' => 'required|string',
+      'masterForm.id' => 'required|string',
+      'masterForm.catatan' => 'required|string',
+      'masterForm.qty' => 'nullable|integer',
       'masterForm.nomor' => 'nullable|integer',
       'masterForm.memo' => 'required|string',
       'masterForm.dibuat_oleh' => 'required|string',
@@ -27,7 +31,9 @@ class TandaTerimaServiceDetailForm extends Form
   public function attributes(): array
   {
     return [
-      'masterForm.nama' => 'Nama',
+      'masterForm.id' => 'ID',
+      'masterForm.catatan' => 'Catatan',
+      'masterForm.qty' => 'Quantity',
       'masterForm.nomor' => 'Nomor',
       'masterForm.dibuat_oleh' => 'Dibuat Oleh',
       'masterForm.diupdate_oleh' => 'Diupdate Oleh',

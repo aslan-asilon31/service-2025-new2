@@ -56,9 +56,9 @@ Route::middleware('pegawai')->group(function () {
     Route::get('/rak', \App\Livewire\MsRakResources\MsRakList::class)->name('rak.list');
     Route::get('/rak-kategori', \App\Livewire\MsRakKategoriResources\MsRakKategoriList::class)->name('rak-kategori.list');
 
-
     Route::get('/tanda-terima-service', \App\Livewire\TandaTerimaServiceHeaderResources\TandaTerimaServiceHeaderList::class)->name('tanda-terima-service.list');
     Route::get('/tanda-terima-service/buat', \App\Livewire\TandaTerimaServiceHeaderResources\TandaTerimaServiceHeaderCrud::class)->name('tanda-terima-service.buat');
+    Route::get('/tanda-terima-service/edit/{id}', \App\Livewire\TandaTerimaServiceHeaderResources\TandaTerimaServiceHeaderCrud::class)->name('tanda-terima-service.edit');
 });
 
 

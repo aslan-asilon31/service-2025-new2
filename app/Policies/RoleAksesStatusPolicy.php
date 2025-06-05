@@ -2,21 +2,28 @@
 
 namespace App\Policies;
 
+use App\Models\TandaTerimaServiceHeader;
 use App\Models\MsPegawai;
 
 class RoleAksesStatusPolicy
 {
-    /**
-     * Create a new policy instance.
-     */
+
     public function __construct()
     {
         //
     }
 
-    public function accessHalaman(MsPegawai $msPegawai)
+    public function updateStatus(MsPegawai $pegawai, TandaTerimaServiceHeader $header, string $newStatus): bool
     {
-        dd($msPegawai->roles());
-        return $msPegawai->roles()->name === 'Gold';
+        $allowedStatusByRole = [
+            'draf'    => ['admin'],
+            'selesai' => ['staff', 'manager'],
+            'terbit'  => ['manager'],
+            'arsip'   => ['admin'],
+        ];
+
+        $rolesAllowed = $allowedStatusByRole[$newStatus] ?? [];
+
+        return $pegawai->hasAnyRole($rolesAllowed);
     }
 }

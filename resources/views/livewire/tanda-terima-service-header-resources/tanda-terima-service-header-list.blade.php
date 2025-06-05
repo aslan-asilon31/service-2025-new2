@@ -1,7 +1,6 @@
 <div>
   <x-list-menu :title="$title" :url="$url" shadow />
 
-
   {{-- <x-button class="" wire:click="export">Export</x-button> --}}
   <x-drawer wire:model="filterDrawer" class="w-11/12 lg:w-1/3" title="Filter" right separator with-close-button>
 
@@ -50,8 +49,8 @@
 
       @scope('cell_action', $row)
         <x-dropdown>
-          <x-menu-item title="Edit" icon="o-pencil-square" link="/pelanggan/edit/{{ $row->id }}" />
-          <x-menu-item title="Show" icon="o-eye" link="/pelanggan/show/{{ $row->id }}" />
+          <x-menu-item title="Edit" icon="o-pencil-square" link="/tanda-terima-service/edit/{{ $row->id }}" />
+          <x-menu-item title="Show" icon="o-eye" link="/tanda-terima-service/show/{{ $row->id }}" />
         </x-dropdown>
       @endscope
 

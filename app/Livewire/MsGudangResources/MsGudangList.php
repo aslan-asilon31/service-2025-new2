@@ -32,7 +32,7 @@ class MsGudangList extends Component
 
   use Toast;
   use WithPagination;
-  use \App\Helpers\Permission\Traits\HasAksesCabangGudangRak;
+  use \App\Helpers\Permission\Traits\HasAccess;
 
   #[Url(except: '')]
   public ?string $search = '';

@@ -1,8 +1,8 @@
 <div>
-  <x-list-menu :title="$title" :url="$url" shadow />
 
 
-  {{-- <x-button class="" wire:click="export">Export</x-button> --}}
+  <x-button label="Tambah Detail Tanda Terima Service Detail" class="btn-sm btn-success text-white" wire:click="buat" />
+
   <x-drawer wire:model="filterDrawer" class="w-11/12 lg:w-1/3" title="Filter" right separator with-close-button>
 
     <x-form wire:submit.prevent="filter">
@@ -40,6 +40,8 @@
 
   <div class="">
 
+
+
     <x-table :headers="$this->headers" class="table-sm border border-gray-400 dark:border-gray-500" :rows="$this->rows"
       :sort-by="$sortBy" with-pagination show-empty-text>
 
@@ -60,6 +62,25 @@
   </div>
 
 
+
+  <x-modal wire:model="modalDetail" title="Tanda Terima Service Detail" class="backdrop-blur" without-trap-focus>
+    <x-form wire:submit="{{ $detailId ? 'updateDetail' : 'simpanDetail' }}"
+      wire:confirm="are you sure to {{ $detailId ? 'Update' : 'Simpan' }} this data ?">
+
+
+      {{-- <x-choices label="Product" wire:model.live="detailForm.product_id" :options="$productsSearchable" placeholder="Product ..."
+        search-function="searchProduct" single searchable /> --}}
+
+      <x-input label="Selling Price" wire:model="detailForm.selling_price" placeholder="Selling Price" />
+
+      <x-input label="Quantity" wire:model="detailForm.qty" placeholder="Qty" />
+
+      <div class="text-center mt-3">
+        <x-errors class="text-white mb-3" />
+        <x-button type="submit" label="{{ $detailId ? 'Update' : 'Simpan' }}" class="btn-success btn-sm text-white" />
+      </div>
+    </x-form>
+  </x-modal>
 
 
 </div>

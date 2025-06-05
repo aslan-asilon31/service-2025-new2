@@ -6,7 +6,7 @@ namespace App\Helpers\Permission\Traits;
 
 use Illuminate\Support\Facades\DB;
 
-trait HasAksesCabangGudangRak
+trait HasAccess
 {
     public function aksesCabang()
     {
