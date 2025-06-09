@@ -3,14 +3,16 @@
 namespace App\Livewire\TandaTerimaServiceHeaderResources;
 
 use App\Livewire\TandaTerimaServiceHeaderResources\Forms\TandaTerimaServiceHeaderForm;
-use App\Livewire\TandaTerimaServiceDetailResources\Forms\TandaTerimaServiceDetailForm;
+use App\Livewire\TandaTerimaServiceHeaderResources\Forms\TandaTerimaServiceDetailForm;
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use App\Models\TrTandaTerimaServiceDetail;
+use App\Models\MsPegawai;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Helpers\Permission\Traits\WithPermission;
 use App\Helpers\FormHook\Traits\WithTandaTerimaService;
+use App\Models\TrTandaTerimaServiceHeader;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Url;
 
@@ -46,6 +48,8 @@ class TandaTerimaServiceHeaderCrud extends Component
   public $productCategoryFirsts = [];
   public $productCategories = [];
   public $header;
+  public $halaman = 'tanda-terima-service';
+  public $cabang;
   public $detailId = null;
 
   #[\Livewire\Attributes\Locked]
@@ -261,13 +265,13 @@ class TandaTerimaServiceHeaderCrud extends Component
     )['headerForm'];
 
     $this->header = $this->headerModel::findOrFail($this->id);
+    $this->halaman = 'servis';
+    $this->cabang = 'CBG01';
+    $userCabang = MsPegawai::with('pegawaiAksesCabang.msCabangs')->find(auth('pegawai')->user()->id);
 
-    try {
-      $this->authorize('updateStatusDraf', [$this->header, $validatedHeaderForm['status']]);
-    } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
-      throw new \Illuminate\Auth\Access\AuthorizationException('Anda tidak diizinkan untuk mengubah status ke ' . $validatedHeaderForm['status']);
-    }
-
+    dd($userCabang);
+    \Illuminate\Support\Facades\Gate::authorize('update', [$this->header, $this->halaman, 'cabang', 'status']);
+    dd('stop');
     // $this->authorize('updateStatus', [$this->header, $validatedHeaderForm['status']]);
 
     $masterData = $this->headerModel::findOrFail($this->id);
@@ -366,9 +370,5 @@ class TandaTerimaServiceHeaderCrud extends Component
       ->orderBy('tgl_dibuat')
       ->get()
       ->merge($selectedOption);
-
-    
-
-
   }
 }

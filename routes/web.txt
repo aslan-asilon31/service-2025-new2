@@ -8,6 +8,9 @@ use App\Http\Controllers\Admin\AdminController;
 
 // Route::get('/', [FrontController::class, 'index'])->name('home');
 
+
+
+
 Route::get('/', function () {
     return redirect()->route('admin_login');
 });

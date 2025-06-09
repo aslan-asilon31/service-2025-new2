@@ -2,15 +2,13 @@
 
 namespace App\Policies;
 
-use App\Models\TandaTerimaServiceHeader;
 use App\Models\MsPegawai;
-use App\Models\RoleAksesStatus;
-use App\Models\TrTandaTerimaServiceHeader;
-use Illuminate\Support\Facades\Gate;
 
-class RoleAksesStatusPolicy
+class PermissionPolicy
 {
-
+    /**
+     * Create a new policy instance.
+     */
     public function __construct()
     {
         //

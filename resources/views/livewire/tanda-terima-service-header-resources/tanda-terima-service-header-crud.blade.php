@@ -39,6 +39,13 @@
             ]" />
           </div>
         </div>
+
+
+        <div class="text-center mt-3">
+          <x-errors class="text-white mb-3" />
+          <x-button type="submit" :label="$id ? 'ubah' : 'simpan'" class="btn-success btn-sm text-white" />
+          <x-button label="batal" class="btn-error btn-sm text-white" wire.click="closeModal" />
+        </div>
       </div>
     </x-form>
 

@@ -8,7 +8,7 @@ use App\Models\RoleAksesStatus;
 use App\Models\TrTandaTerimaServiceHeader;
 use Illuminate\Support\Facades\Gate;
 
-class RoleAksesStatusPolicy
+class TrTandaTerimaServicePolicy
 {
 
     public function __construct()
@@ -16,12 +16,9 @@ class RoleAksesStatusPolicy
         //
     }
 
-    public function update(MsPegawai $pegawai,  $halaman, $cabang, $status)
+    public function update(MsPegawai $pegawai, TrTandaTerimaServiceHeader $model, $halaman, $cabang, $status)
     {
         dd('stop23');
-        //user->role, 
-        //halaman, cabang, status
-
-        return $pegawai->hasAnyPermission($halaman) && $cabang === $pegawai->cabang_kode;
+        return $pegawai->hasAnyRole(['admin', 'manager']) && $cabang === $pegawai->cabang_kode;
     }
 }

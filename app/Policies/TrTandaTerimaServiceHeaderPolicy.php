@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\MsPegawai;
+use App\Models\TandaTerimaServiceHeader;
+use App\Models\RoleAksesStatus;
+use App\Models\TrTandaTerimaServiceHeader;
+use Illuminate\Support\Facades\Gate;
+
+
+class TrTandaTerimaServiceHeaderPolicy
+{
+    /**
+     * Create a new policy instance.
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    public function update(MsPegawai $pegawai, TrTandaTerimaServiceHeader $model)
+    {
+        dd('stop23');
+        return $pegawai->hasAnyRole(['admin', 'manager']) && $cabang === $pegawai->cabang_kode;
+    }
+}

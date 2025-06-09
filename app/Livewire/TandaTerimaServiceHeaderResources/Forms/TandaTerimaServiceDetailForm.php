@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\TandaTerimaServiceDetailResources\Forms;
+namespace App\Livewire\TandaTerimaServiceHeaderResources\Forms;
 
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\Form;

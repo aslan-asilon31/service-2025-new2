@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\TandaTerimaServiceDetailResources;
+namespace App\Livewire\TandaTerimaServiceHeaderResources;
 
 use App\Livewire\TandaTerimaServiceResources\Forms\TandaTerimaServiceHeaderForm;
 use Livewire\Component;

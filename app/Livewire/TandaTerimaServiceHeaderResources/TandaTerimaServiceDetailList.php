@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\TandaTerimaServiceDetailResources;
+namespace App\Livewire\TandaTerimaServiceHeaderResources;
 
 use Livewire\Component;
 use Livewire\Attributes\Url;
@@ -164,7 +164,7 @@ class TandaTerimaServiceDetailList extends Component
 
   public function render()
   {
-    return view('livewire.tanda-terima-service-detail-resources.tanda-terima-service-detail-list')
+    return view('livewire.tanda-terima-service-header-resources.tanda-terima-service-detail-list')
       ->title($this->title);
   }
 }

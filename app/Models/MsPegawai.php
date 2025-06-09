@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Helpers\Permission\Traits\HasAccess;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class MsPegawai  extends  Authenticatable
 {
@@ -47,5 +48,11 @@ class MsPegawai  extends  Authenticatable
     public function trTandaTerimaServiceHeader()
     {
         return $this->belongsTo(TrTandaTerimaServiceHeader::class, 'ms_pegawai_id', 'id');
+    }
+
+
+    public function pegawaiAksesCabang(): HasOne
+    {
+        return $this->hasOne(PegawaiAksesCabang::class);
     }
 }

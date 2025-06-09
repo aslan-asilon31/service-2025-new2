@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             // PegawaiAksesCabangSeeder::class,
             // RoleAksesStatusSeeder::class,
             // MsAksiSeeder::class,
-            ModelHasRoleSeeder::class,
+            // ModelHasRoleSeeder::class,
         ]);
     }
 }

@@ -12,7 +12,11 @@ class Admin extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
-    public $table = 'admins';
+    protected $keyType = 'string';
+    public $incrementing = false;
+    public $table = 'ms_pegawai';
+    public $timestamps = false;
+    public $guarded = [];
 
     // public function roles()
     // {
