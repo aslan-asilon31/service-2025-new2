@@ -26,9 +26,9 @@ class DatabaseSeeder extends Seeder
             // TandaTerimaServiceDetailSeeder::class,
             // MsCabangDetailSeeder::class,
             // PegawaiAksesCabangSeeder::class,
-            // RoleAksesStatusSeeder::class,
             // MsAksiSeeder::class,
-            // ModelHasRoleSeeder::class,
+            ModelHasRoleSeeder::class,
+            RoleAksesStatusSeeder::class,
         ]);
     }
 }

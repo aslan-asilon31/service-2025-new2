@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tr_tr_pemesanan_penjualan_polimorf');
+        Schema::dropIfExists('tr_pemesanan_penjualan_polimorf');
     }
 };

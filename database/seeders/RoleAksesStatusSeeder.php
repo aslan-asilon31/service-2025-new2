@@ -6,7 +6,9 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use App\Models\Role;
 use App\Models\MsPegawai;
+use App\Models\Permission;
 use App\Models\MsStatus;
 
 class RoleAksesStatusSeeder extends Seeder
@@ -15,22 +17,22 @@ class RoleAksesStatusSeeder extends Seeder
     {
         $now = Carbon::now();
 
-        // Ambil semua ID pegawai dan status
-        $pegawaiIds = MsPegawai::pluck('id')->toArray();
+        $roleIds = Role::pluck('id')->toArray();
         $statusIds  = MsStatus::pluck('id')->toArray();
+        $permissionIds  = permission::pluck('id')->toArray();
 
-        // Helper untuk mengambil ID acak
-        $randomPegawaiId = fn() => $pegawaiIds[array_rand($pegawaiIds)];
+        $randomRoleId = fn() => $roleIds[array_rand($roleIds)];
         $randomStatusId  = fn() => $statusIds[array_rand($statusIds)];
+        $randomPermissionId  = fn() => $permissionIds[array_rand($permissionIds)];
 
-        // Buat 5 data acak
         $data = [];
 
         for ($i = 1; $i <= 5; $i++) {
             $data[] = [
                 'id'             => Str::uuid(),
-                'ms_pegawai_id'  => $randomPegawaiId(),
-                'ms_status_id'   => $randomStatusId(),   // ← perbaikan: gunakan kolom ms_status_id konsisten
+                'role_id'  => $randomRoleId(),
+                'ms_status_id'   => $randomStatusId(),
+                'permission_id'  => $randomPermissionId(),
                 'nomor'          => $i,
                 'dibuat_oleh'    => 'admin',
                 'diupdate_oleh'  => 'admin',

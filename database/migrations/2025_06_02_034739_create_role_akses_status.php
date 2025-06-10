@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('role_akses_status', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->uuid('role_id');
+            $table->unsignedBigInteger('role_id');
             $table->foreign('role_id', 'fk_role_id')->references('id')->on('roles')->onDelete('cascade')->onUpdate('cascade');
 
             $table->uuid('ms_status_id');
             $table->foreign('ms_status_id', 'fk_ms_status_id')->references('id')->on('ms_status')->onDelete('cascade')->onUpdate('cascade');
 
-            $table->uuid('permission_id');
+            $table->unsignedBigInteger('permission_id');
             $table->foreign('permission_id', 'fk_permission_id')->references('id')->on('permissions')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('nomor');
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pegawai_akses_cabang');
+        Schema::dropIfExists('role_akses_status');
     }
 };

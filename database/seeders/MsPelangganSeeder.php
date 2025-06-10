@@ -12,7 +12,6 @@ class MsPelangganSeeder extends Seeder
     public function run()
     {
         $now = Carbon::now();
-
         DB::table('ms_pelanggan')->insert([
             // Data Pelanggan yang sudah ada
             [

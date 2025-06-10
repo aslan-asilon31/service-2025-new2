@@ -19,10 +19,14 @@ class AdminSeeder extends Seeder
         $lastNumber = MsPegawai::max('nomor') ?? 0;
 
         // Data pegawai yang akan dimasukkan
+        // $pegawaiList = [
+        //     ['nama' => 'Admin', 'email' => 'admin@gmail.com'],
+        //     ['nama' => 'Manager', 'email' => 'manager@gmail.com'],
+        //     ['nama' => 'Staff', 'email' => 'staff@gmail.com'],
+        // ];
         $pegawaiList = [
-            ['nama' => 'Admin', 'email' => 'admin@gmail.com'],
-            ['nama' => 'Manager', 'email' => 'manager@gmail.com'],
-            ['nama' => 'Staff', 'email' => 'staff@gmail.com'],
+            // ['nama' => 'head-office', 'email' => 'headoffice@gmail.com'],
+            // ['nama' => 'supervisor', 'email' => 'supervisor@gmail.com'],
         ];
 
         foreach ($pegawaiList as $index => $data) {

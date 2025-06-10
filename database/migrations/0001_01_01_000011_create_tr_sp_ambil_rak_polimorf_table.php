@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tr_sp_ambil_rak_header_polimorf');
+        Schema::dropIfExists('tr_sp_ambil_rak_polimorf');
     }
 };
