@@ -14,11 +14,14 @@ return new class extends Migration
         Schema::create('role_akses_status', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->uuid('ms_pegawai_id');
-            $table->foreign('ms_pegawai_id', 'fk_ms_pegawai_id')->references('id')->on('ms_pegawai')->onDelete('cascade')->onUpdate('cascade');
+            $table->uuid('role_id');
+            $table->foreign('role_id', 'fk_role_id')->references('id')->on('roles')->onDelete('cascade')->onUpdate('cascade');
 
             $table->uuid('ms_status_id');
             $table->foreign('ms_status_id', 'fk_ms_status_id')->references('id')->on('ms_status')->onDelete('cascade')->onUpdate('cascade');
+
+            $table->uuid('permission_id');
+            $table->foreign('permission_id', 'fk_permission_id')->references('id')->on('permissions')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('nomor');
             $table->string('dibuat_oleh', 255)->nullable()->index();

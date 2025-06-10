@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Auth;
 
 class Pegawai
 {
@@ -16,8 +15,8 @@ class Pegawai
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!Auth::guard('pegawai')->check()) {
-            return redirect()->route('pegawai_login');
+        if (!\Illuminate\Support\Facades\Auth::guard('pegawai')->check()) {
+            return redirect()->route('admin_login');
         }
         return $next($request);
     }

@@ -128,7 +128,7 @@ class TandaTerimaServiceDetailCrud extends Component
 
   public function buat()
   {
-    $this->permission('tanda-terima-service-buat');
+    $this->permission('tanda_terima_service-buat');
     $this->masterForm->reset();
     // dd('cek1');
 
@@ -146,7 +146,7 @@ class TandaTerimaServiceDetailCrud extends Component
 
   public function ubah()
   {
-    $this->permission('tanda-terima-service-ubah');
+    $this->permission('tanda_terima_service-ubah');
 
     $this->isReadonly = false;
     $this->isDisabled = false;

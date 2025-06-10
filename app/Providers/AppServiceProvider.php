@@ -3,10 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Models\RoleAksesStatus;
-use App\Models\TrTandaTerimaServiceHeader;
-use App\Policies\RoleAksesStatusPolicy;
-use App\Policies\TrTandaTerimaServiceHeaderPolicy;
+use App\Models\MsPegawai;
+use App\Policies\PermissionPolicy;
 use Illuminate\Support\Facades\Gate;
 
 
@@ -26,7 +24,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Support\Facades\Auth::shouldUse('pegawai');
-        Gate::policy(RoleAksesStatus::class, RoleAksesStatusPolicy::class);
-        Gate::define(TrTandaTerimaServiceHeader::class, TrTandaTerimaServiceHeaderPolicy::class);
+        Gate::policy(MsPegawai::class, PermissionPolicy::class);
     }
 }

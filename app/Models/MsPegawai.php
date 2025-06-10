@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class MsPegawai  extends  Authenticatable
 {
     use HasFactory, HasUuids,  HasRoles, HasAccess;
-
+    protected $guard_name = 'pegawai';
     protected $keyType = 'string';
     public $incrementing = false;
     public $table = 'ms_pegawai';
@@ -33,16 +33,6 @@ class MsPegawai  extends  Authenticatable
             'model_id',
             'role_id'
         )->where('model_type', self::class);
-    }
-
-    public function permissions()
-    {
-        return $this->roles()
-            ->with('permissions')
-            ->get()
-            ->pluck('permissions')
-            ->flatten()
-            ->unique('id');
     }
 
     public function trTandaTerimaServiceHeader()

@@ -13,15 +13,13 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-
-
-
         return view('admin.dashboard');
     }
 
     public function login()
     {
-        if (Auth::guard('pegawai')->check()) {
+        if (\Illuminate\Support\Facades\Auth::guard('pegawai')->check()) {
+            dd('stop');
             return redirect()->route('admin_dashboard');
         }
         return view('admin.login');
@@ -40,7 +38,7 @@ class AdminController extends Controller
             'password' => $check['password'],
         ];
 
-        if (Auth::guard('pegawai')->attempt($data)) {
+        if (\Illuminate\Support\Facades\Auth::guard('pegawai')->attempt($data)) {
             return redirect()->route('admin_dashboard');
         } else {
             return redirect()->back()->with('error', 'Invalid credentials');
@@ -49,7 +47,7 @@ class AdminController extends Controller
 
     public function logout()
     {
-        Auth::guard('pegawai')->logout();
+        \Illuminate\Support\Facades\Auth::guard('pegawai')->logout();
         return redirect()->route('admin_login')->with('success', 'Logged out successfully');
     }
 
@@ -116,10 +114,10 @@ class AdminController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:admins,email,' . Auth::guard('admin')->user()->id,
+            'email' => 'required|email|unique:admins,email,' . \Illuminate\Support\Facades\Auth::guard('admin')->user()->id,
         ]);
 
-        $admin = Admin::where('id', Auth::guard('admin')->user()->id)->first();
+        $admin = Admin::where('id', \Illuminate\Support\Facades\Auth::guard('admin')->user()->id)->first();
 
         if ($request->photo) {
             $request->validate([

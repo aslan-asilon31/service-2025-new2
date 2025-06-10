@@ -3,6 +3,8 @@
 namespace App\Policies;
 
 use App\Models\MsPegawai;
+use App\Models\PegawaiAksesCabang;
+use App\Models\TrTandaTerimaServiceHeader;
 
 class PermissionPolicy
 {
@@ -14,12 +16,31 @@ class PermissionPolicy
         //
     }
 
-    public function update(MsPegawai $pegawai,  $halaman, $cabang, $status)
+    public function update(MsPegawai $msPegawai, $halaman, $cabang, $status): bool
     {
-        dd('stop23');
-        //user->role, 
-        //halaman, cabang, status
+        $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
 
-        return $pegawai->hasAnyPermission($halaman) && $cabang === $pegawai->cabang_kode;
+        $hasPermission = $pegawai->getAllPermissions()
+            ->pluck('name')
+            ->contains($halaman);
+        if (!$hasPermission) {
+            abort(403, 'Hak Akses Anda Dibatasi .');
+        }
+
+        $aksesCabangId = PegawaiAksesCabang::where('ms_pegawai_id', $pegawai->id)->value('ms_cabang_id');
+        if ($aksesCabangId != $cabang) {
+            abort(403, 'Hak Akses Anda Dibatasi.');
+        }
+
+        if (
+            $halaman == 'tanda_terima_service-update' &&
+            in_array('admin', $pegawai->getRoleNames()->toArray()) || in_array('staff', $pegawai->getRoleNames()->toArray())
+        ) {
+            if ($status == 'selesai' || $status == 'draf') {
+                abort(403, 'Hak Akses Anda Dibatasi.');
+            }
+        }
+
+        return true;
     }
 }

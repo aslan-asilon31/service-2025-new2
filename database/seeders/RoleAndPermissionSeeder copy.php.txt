@@ -12,22 +12,19 @@ class RoleAndPermissionSeeder extends Seeder
     public function run()
     {
         // Membuat Permissions
-        $roleList = Permission::create(['name' => 'role-list']);
-        $roleBuat = Permission::create(['name' => 'role-buat']);
-        $roleSimpan = Permission::create(['name' => 'role-simpan']);
-        $roleUbah = Permission::create(['name' => 'role-ubah']);
-        $roleUpdate = Permission::create(['name' => 'role-update']);
-        $roleHapus = Permission::create(['name' => 'role-hapus']);
-        $roleTampil = Permission::create(['name' => 'role-tampil']);
+        $barangList = Permission::create(['name' => 'barang-list']);
+        $barangBuat = Permission::create(['name' => 'barang-buat']);
+        $barangUbah = Permission::create(['name' => 'barang-ubah']);
+        $barangHapus = Permission::create(['name' => 'barang-hapus']);
+        $barangTampil = Permission::create(['name' => 'barang-tampil']);
 
 
-        $permissionList = Permission::create(['name' => 'permission-list']);
-        $permissionBuat = Permission::create(['name' => 'permission-buat']);
-        $permissionSimpan = Permission::create(['name' => 'permission-simpan']);
-        $permissionUbah = Permission::create(['name' => 'permission-ubah']);
-        $permissionUpdate = Permission::create(['name' => 'permission-update']);
-        $permissionHapus = Permission::create(['name' => 'permission-hapus']);
-        $permissionTampil = Permission::create(['name' => 'permission-tampil']);
+        $cabangList = Permission::create(['name' => 'cabang-list']);
+        $cabangBuat = Permission::create(['name' => 'cabang-buat']);
+        $cabangUbah = Permission::create(['name' => 'cabang-ubah']);
+        $cabangHapus = Permission::create(['name' => 'cabang-hapus']);
+        $cabangTampil = Permission::create(['name' => 'cabang-tampil']);
+
 
         $gudangList = Permission::create(['name' => 'gudang-list']);
         $gudangBuat = Permission::create(['name' => 'gudang-buat']);

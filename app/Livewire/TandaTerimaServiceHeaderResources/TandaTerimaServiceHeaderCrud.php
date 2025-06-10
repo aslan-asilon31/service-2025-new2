@@ -9,9 +9,11 @@ use Livewire\Component;
 use Livewire\Attributes\Computed;
 use App\Models\TrTandaTerimaServiceDetail;
 use App\Models\MsPegawai;
+use App\Models\PegawaiAksesCabang;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Helpers\Permission\Traits\WithPermission;
 use App\Helpers\FormHook\Traits\WithTandaTerimaService;
+use App\Models\Permission;
 use App\Models\TrTandaTerimaServiceHeader;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Url;
@@ -34,8 +36,7 @@ class TandaTerimaServiceHeaderCrud extends Component
 
 
   #[\Livewire\Attributes\Locked]
-  public string $title = 'Tanda Terima Service ';
-
+  public string $title = 'Tanda Terima Service';
 
   #[Url(except: '')]
   public ?string $search = '';
@@ -154,7 +155,7 @@ class TandaTerimaServiceHeaderCrud extends Component
 
   public function buat()
   {
-    $this->permission('tanda-terima-service-buat');
+    $this->permission('tanda_terima_service-buat');
     $this->headerForm->reset();
 
     $nomorTerakhir = \Illuminate\Support\Facades\DB::table('ms_barang')->max('nomor') ?? 0;
@@ -248,7 +249,8 @@ class TandaTerimaServiceHeaderCrud extends Component
 
   public function ubah()
   {
-    $this->permission('tanda-terima-service-ubah');
+
+    $this->permission('tanda_terima_service-ubah');
     $this->isReadonly = false;
     $this->isDisabled = false;
     $masterData = $this->headerModel::findOrFail($this->id);
@@ -264,15 +266,22 @@ class TandaTerimaServiceHeaderCrud extends Component
       $this->headerForm->attributes()
     )['headerForm'];
 
-    $this->header = $this->headerModel::findOrFail($this->id);
-    $this->halaman = 'servis';
-    $this->cabang = 'CBG01';
-    $userCabang = MsPegawai::with('pegawaiAksesCabang.msCabangs')->find(auth('pegawai')->user()->id);
+    $user = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
 
-    dd($userCabang);
-    \Illuminate\Support\Facades\Gate::authorize('update', [$this->header, $this->halaman, 'cabang', 'status']);
-    dd('stop');
-    // $this->authorize('updateStatus', [$this->header, $validatedHeaderForm['status']]);
+    $aksesCabang = PegawaiAksesCabang::with(['msPegawai', 'msCabang'])
+      ->where('ms_pegawai_id', $user->id)
+      ->first();
+
+    $halaman = 'tanda_terima_service-update';
+
+    \Illuminate\Support\Facades\Gate::authorize('update', [
+      \App\Models\Permission::class,
+      $halaman,
+      $validatedHeaderForm['ms_cabang_id'],
+      $validatedHeaderForm['status'],
+    ]);
+
+    dd('stop111');
 
     $masterData = $this->headerModel::findOrFail($this->id);
     try {

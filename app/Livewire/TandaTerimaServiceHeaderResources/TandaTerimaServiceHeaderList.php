@@ -10,6 +10,8 @@ use Livewire\WithPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Livewire\ProductResources\Forms\ProductForm;
 use Mary\Traits\Toast;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Permission\Traits\WithPermission;
 
@@ -47,7 +49,7 @@ class TandaTerimaServiceHeaderList extends Component
 
   public function mount()
   {
-    $this->permission('tanda-terima-service-list');
+    $this->permission('tanda_terima_service-list');
   }
 
   #[Computed]

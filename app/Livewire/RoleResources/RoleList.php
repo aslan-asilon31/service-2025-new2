@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Role;
+namespace App\Livewire\RoleResources;
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
@@ -60,6 +60,7 @@ class RoleList extends Component
       ['key' => 'no_urut', 'label' => '#', 'sortable' => false, 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-right'],
       ['key' => 'id', 'label' => 'ID', 'sortBy' => 'id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
       ['key' => 'name', 'label' => 'Name', 'sortBy' => 'name', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'guard_name', 'label' => 'Guard Name', 'sortBy' => 'guard_name', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
       ['key' => 'created_at', 'label' => 'Created At', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'created_at', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
       ['key' => 'updated_at', 'label' => 'Updated At', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'updated_at', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center']
     ];
@@ -115,13 +116,13 @@ class RoleList extends Component
     $validatedFilters = $this->validate(
       [
         'filterForm.name' => 'nullable|string',
-        'filterForm.status' => 'nullable|integer',
+        'filterForm.guard_name' => 'nullable|integer',
         'filterForm.tgl_dibuat' => 'nullable|string',
       ],
       [],
       [
         'filterForm.name' => 'Name',
-        'filterForm.status' => 'Status',
+        'filterForm.guard_name' => 'Guard Name',
         'filterForm.tgl_dibuat' => 'Tanggal Dibuat',
       ]
     )['filterForm'];
@@ -162,7 +163,7 @@ class RoleList extends Component
 
   public function render()
   {
-    return view('livewire.permission-resources.permission-list')
+    return view('livewire.role-resources.role-list')
       ->title($this->title);
   }
 }

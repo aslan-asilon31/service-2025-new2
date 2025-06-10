@@ -56,7 +56,7 @@ class TandaTerimaServiceDetailList extends Component
 
   public function mount()
   {
-    $this->permission('tanda-terima-service-list');
+    $this->permission('tanda_terima_service-list');
   }
 
   public function fetchIdFromHeader() {}

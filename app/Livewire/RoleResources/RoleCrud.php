@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Livewire\Role;
+namespace App\Livewire\RoleResources;
 
-use App\Livewire\RoleResources\Forms\ProductForm;
+use App\Livewire\RoleResources\Forms\RoleForm;
 use Livewire\Component;
 use App\Models\ProductBrand;
 use App\Models\Product;
@@ -13,7 +13,7 @@ class RoleCrud extends Component
 
   public function render()
   {
-    return view('livewire.product-resources.product-crud')
+    return view('livewire.role-resources.role-crud')
       ->title($this->title);
   }
 
@@ -21,7 +21,7 @@ class RoleCrud extends Component
   use \Mary\Traits\Toast;
 
   #[\Livewire\Attributes\Locked]
-  public string $title = 'Product';
+  public string $title = 'Role';
 
   public  $brands = [];
 
@@ -57,7 +57,7 @@ class RoleCrud extends Component
   #[\Livewire\Attributes\Locked]
   protected $masterModel = \App\Models\Permission::class;
 
-  public ProductForm $masterForm;
+  public RoleForm $masterForm;
 
   public function mount()
   {
@@ -83,7 +83,7 @@ class RoleCrud extends Component
     $this->masterForm->reset();
   }
 
-  public function store()
+  public function simpan()
   {
     $validatedForm = $this->validate(
       $this->masterForm->rules(),
