@@ -18,12 +18,6 @@ class Admin extends Authenticatable
     public $timestamps = false;
     public $guarded = [];
 
-    // public function roles()
-    // {
-    //     return $this->hasMany(Role::class, 'id');
-    // }
-
-
     public function permissions()
     {
         return $this->hasMany(Permission::class, 'id');
