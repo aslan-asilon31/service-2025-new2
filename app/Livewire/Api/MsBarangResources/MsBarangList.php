@@ -10,7 +10,6 @@ class MsBarangList extends Component
 
     public function mount()
     {
-        dd('stop');
         $data = $this->fetchByHttp();
         dd($data);
     }

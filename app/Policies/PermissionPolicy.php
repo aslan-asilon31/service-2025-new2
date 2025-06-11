@@ -53,16 +53,13 @@ class PermissionPolicy
             abort(403, 'Role Anda tidak memiliki izin untuk mengubah ke status ini.');
         }
 
-        // $updateStatusTerbit = MsStatus::where('nama', 'terbit')->value('id');
-
-        if ($status == 'terbit' && $pegawai->getRoleNames()->first() == 'admin') {
+        if ($status == 'terbit' && !in_array($pegawai->getRoleNames()->first(), ['manager', 'head-office', 'developer'])) {
             RoleAksesStatus::whereIn('role_id', $roleId)
                 ->where('permission_id', $halamanId)
                 ->where('status', 'aktif')
                 ->where('ms_status_id', '!=', $statusId)
                 ->update(['status' => 'tidak-aktif']);
         }
-
 
         return true;
     }

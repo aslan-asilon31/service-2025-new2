@@ -1,7 +1,5 @@
 <div>
   <div>
-    @dump($pelangganSearchable)
-    @dump($headerForm)
     <x-list-menu :title="$title" :url="$url" :id="$id" shadow class="" />
     <x-form wire:submit="{{ $id ? 'update' : 'simpan' }}" class="bg-white p-2">
 
@@ -31,9 +29,9 @@
           </div>
           <div class="mb-3">
             <x-select label="Status" wire:model="headerForm.status" :options="[
-                ['id' => 'batal', 'name' => 'Batal'],
-                ['id' => 'draf', 'name' => 'Draf'],
-                ['id' => 'selesai', 'name' => 'Selesai'],
+                ['id' => 'batal', 'name' => 'Batal', 'disabled' => true],
+                ['id' => 'draf', 'name' => 'Draf', 'disabled' => true],
+                ['id' => 'selesai', 'name' => 'Selesai', 'disabled' => true],
                 ['id' => 'terbit', 'name' => 'Terbit'],
                 ['id' => 'arsip', 'name' => 'Arsip'],
             ]" />

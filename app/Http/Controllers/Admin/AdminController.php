@@ -19,7 +19,6 @@ class AdminController extends Controller
     public function login()
     {
         if (\Illuminate\Support\Facades\Auth::guard('pegawai')->check()) {
-            dd('stop');
             return redirect()->route('admin_dashboard');
         }
         return view('admin.login');

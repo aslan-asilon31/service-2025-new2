@@ -9,9 +9,6 @@
 
       <x-input label="Name" placeholder="Filter By Name" wire:model="filterForm.name" icon="o-magnifying-glass"
         clearable />
-
-
-
       <x-datepicker label="Tanggal Dibuat" wire:model="filterForm.created_at" icon="o-calendar" :config="['altFormat' => 'd/m/Y']" />
       <x-datepicker label="Tanggal Diupdate" wire:model="filterForm.updated_at" icon="o-calendar" :config="['altFormat' => 'd/m/Y']" />
 
@@ -35,8 +32,8 @@
 
       @scope('cell_action', $row)
         <x-dropdown>
-          <x-menu-item title="Edit" icon="o-pencil-square" link="/pelanggan/edit/{{ $row->id }}" />
-          <x-menu-item title="Show" icon="o-eye" link="/pelanggan/show/{{ $row->id }}" />
+          <x-menu-item title="Ubah" icon="o-pencil-square" link="/role/ubah/{{ $row->id }}" />
+          <x-menu-item title="Tampil" icon="o-eye" link="/role/tampil/{{ $row->id }}" />
         </x-dropdown>
       @endscope
 

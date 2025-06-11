@@ -21,6 +21,7 @@ class RoleList extends Component
 
   public string $title = "Roles";
   public string $url = "/role";
+  public $permissionList = false;
 
   use WithPermission;
 
@@ -33,6 +34,7 @@ class RoleList extends Component
   #[Url(except: '')]
   public ?string $search = '';
 
+  public $editingPermissionId = null;
   public bool $filterDrawer;
 
   public array $sortBy = ['column' => 'name', 'direction' => 'desc'];
@@ -139,6 +141,22 @@ class RoleList extends Component
     $this->reset('filters');
     $this->reset('filterForm');
     $this->success('filter cleared');
+  }
+
+
+
+  public function editPermission($id)
+  {
+    $this->editingPermissionId = $id;
+    return redirect()->to("/permission/edit/$id");
+  }
+
+  public function confirmDelete($id)
+  {
+    if ($id) {
+      \App\Models\Permission::find($id)?->delete();
+      $this->loadPermissions();
+    }
   }
 
   public function delete()

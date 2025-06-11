@@ -13,10 +13,12 @@ use App\Models\PegawaiAksesCabang;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Helpers\Permission\Traits\WithPermission;
 use App\Helpers\FormHook\Traits\WithTandaTerimaService;
-use App\Models\Permission;
 use App\Models\TrTandaTerimaServiceHeader;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Url;
+use App\Models\MsStatus;
+use Spatie\Permission\Models\Permission;
+use App\Models\RoleAksesStatus;
 
 class TandaTerimaServiceHeaderCrud extends Component
 {
@@ -82,6 +84,9 @@ class TandaTerimaServiceHeaderCrud extends Component
 
   #[\Livewire\Attributes\Locked]
   protected $detailModel = \App\Models\TrTandaTerimaServiceDetail::class;
+
+
+  public array $statusDropdownAktif = [];
 
 
   // #[\Livewire\Attributes\Session]
@@ -163,11 +168,11 @@ class TandaTerimaServiceHeaderCrud extends Component
 
     // ----------------------------------------------------------------
 
-    $user = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
+    $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
 
     $pegawaiAksesCabang = \Illuminate\Support\Facades\DB::table('pegawai_akses_cabang as pac')
       ->join('ms_cabang as mc', 'pac.ms_cabang_id', '=', 'mc.id')
-      ->where('pac.ms_pegawai_id', $user->id)
+      ->where('pac.ms_pegawai_id', $pegawai->id)
       ->select('mc.*')
       ->get()->toArray();
 
@@ -205,7 +210,7 @@ class TandaTerimaServiceHeaderCrud extends Component
 
     $pegawaiAksesCabang = \Illuminate\Support\Facades\DB::table('pegawai_akses_cabang as pac')
       ->join('ms_cabang as mc', 'pac.ms_cabang_id', '=', 'mc.id')
-      ->where('pac.ms_pegawai_id', $user->id)
+      ->where('pac.ms_pegawai_id', $pegawai->id)
       ->select('mc.*')
       ->get()->toArray();
 
@@ -250,6 +255,35 @@ class TandaTerimaServiceHeaderCrud extends Component
   public function ubah()
   {
 
+    $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
+    $roleIds = $pegawai->roles()->pluck('id')->toArray();
+    $halamanId = Permission::where('name', 'nama-halaman')->value('id');
+
+    $statusDropdownAktif = RoleAksesStatus::whereIn('role_id', $roleIds)
+      ->where('permission_id', $halamanId)
+      ->where('status', 'aktif')
+      ->pluck('ms_status_id')
+      ->toArray();
+
+    $statusList = MsStatus::whereIn('nama', ['batal', 'draf', 'selesai', 'terbit', 'arsip'])->get();
+
+    $statusMap = [
+      'batal' => 'Batal',
+      'draf' => 'Draf',
+      'selesai' => 'Selesai',
+      'terbit' => 'Terbit',
+      'arsip' => 'Arsip',
+    ];
+
+    $this->options = collect($statusMap)->map(function ($name, $key) use ($statusList, $statusDropdownAktif) {
+      $statusId = $statusList->firstWhere('nama', $key)?->id;
+      return [
+        'id' => $key,
+        'name' => $name,
+        'disabled' => !in_array($statusId, $statusDropdownAktif ?? [])
+      ];
+    })->values()->toArray();
+
     $this->permission('tanda_terima_service-ubah');
     $this->isReadonly = false;
     $this->isDisabled = false;
@@ -259,6 +293,7 @@ class TandaTerimaServiceHeaderCrud extends Component
 
   public function update()
   {
+    $halamanId = Permission::where('name', $halaman)->value('id');
 
     $validatedHeaderForm = $this->validate(
       $this->headerForm->rules(),
@@ -266,12 +301,11 @@ class TandaTerimaServiceHeaderCrud extends Component
       $this->headerForm->attributes()
     )['headerForm'];
 
-    $user = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
+    $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
 
     $aksesCabang = PegawaiAksesCabang::with(['msPegawai', 'msCabang'])
-      ->where('ms_pegawai_id', $user->id)
+      ->where('ms_pegawai_id', $pegawai->id)
       ->first();
-
 
     \Illuminate\Support\Facades\Gate::authorize('update', [
       \App\Models\Permission::class,
@@ -280,7 +314,10 @@ class TandaTerimaServiceHeaderCrud extends Component
       $validatedHeaderForm['status'],
     ]);
 
-    dd('stop111');
+    $statusId = MsStatus::where('nama', 'terbit')->value('id');
+    $halamanId = Permission::where('name', $halaman)->value('id');
+    $roleId = $pegawai->roles()->pluck('id')->toArray();
+
 
     $masterData = $this->headerModel::findOrFail($this->id);
     try {

@@ -12,22 +12,13 @@ class PegawaiAksesCabangSeeder extends Seeder
     public function run()
     {
         $now = Carbon::now();
-        $AllMsCabangIds = \App\Models\MsCabang::all()->pluck('id')->toArray();
-        $AllMsPegawaiIds = \App\Models\MsPegawai::all()->pluck('id')->toArray();
 
-        $getRandomMsCabangHeaderId = function () use ($AllMsCabangIds) {
-            return $AllMsCabangIds[array_rand($AllMsCabangIds)];
-        };
-
-        $getRandomMsPegawaiHeaderId = function () use ($AllMsPegawaiIds) {
-            return $AllMsPegawaiIds[array_rand($AllMsPegawaiIds)];
-        };
 
         DB::table('pegawai_akses_cabang')->insert([
             [
                 'id' => Str::uuid(),
-                'ms_cabang_id' => $getRandomMsCabangHeaderId(),
-                'ms_pegawai_id' => $getRandomMsPegawaiHeaderId(),
+                'ms_cabang_id' => '1546b884-d31b-4596-959f-a18088ca105e',
+                'ms_pegawai_id' => '01975916-74ca-7311-92b0-6202a26bf1bd',
                 'nomor' => 1,
                 'dibuat_oleh' => 'admin',
                 'diupdate_oleh' => 'admin',
@@ -35,50 +26,7 @@ class PegawaiAksesCabangSeeder extends Seeder
                 'tgl_diupdate' => $now,
                 'status' => 'aktif',
             ],
-            [
-                'id' => Str::uuid(),
-                'ms_cabang_id' => $getRandomMsCabangHeaderId(),
-                'ms_pegawai_id' => $getRandomMsPegawaiHeaderId(),
-                'nomor' => 2,
-                'dibuat_oleh' => 'admin',
-                'diupdate_oleh' => 'admin',
-                'tgl_dibuat' => $now,
-                'tgl_diupdate' => $now,
-                'status' => 'aktif',
-            ],
-            [
-                'id' => Str::uuid(),
-                'ms_cabang_id' => $getRandomMsCabangHeaderId(),
-                'ms_pegawai_id' => $getRandomMsPegawaiHeaderId(),
-                'nomor' => 3,
-                'dibuat_oleh' => 'admin',
-                'diupdate_oleh' => 'admin',
-                'tgl_dibuat' => $now,
-                'tgl_diupdate' => $now,
-                'status' => 'aktif',
-            ],
-            [
-                'id' => Str::uuid(),
-                'ms_cabang_id' => $getRandomMsCabangHeaderId(),
-                'ms_pegawai_id' => $getRandomMsPegawaiHeaderId(),
-                'nomor' => 4,
-                'dibuat_oleh' => 'admin',
-                'diupdate_oleh' => 'admin',
-                'tgl_dibuat' => $now,
-                'tgl_diupdate' => $now,
-                'status' => 'aktif',
-            ],
-            [
-                'id' => Str::uuid(),
-                'ms_cabang_id' => $getRandomMsCabangHeaderId(),
-                'ms_pegawai_id' => $getRandomMsPegawaiHeaderId(),
-                'nomor' => 5,
-                'dibuat_oleh' => 'admin',
-                'diupdate_oleh' => 'admin',
-                'tgl_dibuat' => $now,
-                'tgl_diupdate' => $now,
-                'status' => 'aktif',
-            ],
+
         ]);
     }
 }
