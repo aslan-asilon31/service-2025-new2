@@ -13,7 +13,6 @@ class PegawaiAksesCabangSeeder extends Seeder
     {
         $now = Carbon::now();
 
-
         DB::table('pegawai_akses_cabang')->insert([
             [
                 'id' => Str::uuid(),
@@ -26,7 +25,6 @@ class PegawaiAksesCabangSeeder extends Seeder
                 'tgl_diupdate' => $now,
                 'status' => 'aktif',
             ],
-
         ]);
     }
 }

@@ -10,9 +10,9 @@ trait WithPermission
 {
     public function permission(string $permissionId)
     {
-        $user = Auth::guard('pegawai')->user();
+        $pegawai = Auth::guard('pegawai')->user();
 
-        $permissionNames = $user->getAllPermissions()->pluck('name')->toArray();
+        $permissionNames = $pegawai->getAllPermissions()->pluck('name')->toArray();
 
         if (empty($permissionNames)) {
             return $this->unauthorizedPermission('Anda tidak diizinkan untuk masuk.');

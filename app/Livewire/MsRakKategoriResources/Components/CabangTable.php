@@ -71,7 +71,7 @@ final class CabangTable extends PowerGridComponent
       ->add('updated_by')
       ->add('created_at')
       ->add('updated_at')
-      ->add('is_activated', fn($record) => $record->is_activated ? 'Yes' : 'No');
+      ->add('is_activated', fn($record) => $record->is_activated ? 'Aktif' : 'Tidak Aktif');
   }
 
   public function columns(): array

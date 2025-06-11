@@ -18,7 +18,7 @@
       <x-input label="Diupdate Oleh" placeholder="Filter By Diupdate Oleh" wire:model="filterForm.updated_by"
         icon="o-magnifying-glass" clearable />
 
-      <x-select label="Is Activated" wire:model="filterForm.status" :options="[['id' => 1, 'name' => 'Yes'], ['id' => 0, 'name' => 'No']]" placeholder="- Is Activated -"
+      <x-select label="Is Activated" wire:model="filterForm.status" :options="[['id' => 1, 'name' => 'Aktif'], ['id' => 0, 'name' => 'Tidak Aktif']]" placeholder="- Is Activated -"
         placeholder-value="" />
 
       <x-datepicker label="Tanggal Dibuat" wire:model="filterForm.tgl_dibuat" icon="o-calendar" :config="['altFormat' => 'd/m/Y']" />
@@ -55,7 +55,7 @@
       @endscope
 
       @scope('cell_status', $row)
-        <x-badge :value="$row->status == 'aktif' ? 'Yes' : 'No'"
+        <x-badge :value="$row->status == 'aktif' ? 'Aktif' : 'Tidak Aktif'"
           class=" {{ $row->status == 'aktif' ? 'badge-primary badge-soft' : 'badge-error  badge-soft' }}" />
       @endscope
 

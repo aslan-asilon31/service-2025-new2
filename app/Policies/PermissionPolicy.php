@@ -35,16 +35,11 @@ class PermissionPolicy
             abort(403, 'Hak Akses Anda Dibatasi2.');
         }
 
-        // $roleId = $pegawai->roles()->whereIn('name', $pegawai->getRoleNames())->pluck('id')->toArray();
-        // $halamanId = Permission::where('name', $halaman)->pluck('id')->toArray();
-        // $statusId = MsStatus::where('nama', $status)->pluck('id')->toArray();
-
-
-        $statusId = MsStatus::where('nama', 'terbit')->value('id');
+        $statusIds = MsStatus::whereIn('nama', ['terbit', 'arsip'])->pluck('id')->toArray();
         $halamanId = Permission::where('name', $halaman)->value('id');
         $roleId = $pegawai->roles()->pluck('id')->toArray();
         $hasAksesStatus = RoleAksesStatus::where('role_id', $roleId)
-            ->where('ms_status_id', $statusId)
+            ->whereIn('ms_status_id', $statusIds)
             ->where('permission_id', $halamanId)
             ->where('status', 'aktif')
             ->exists();
@@ -57,7 +52,7 @@ class PermissionPolicy
             RoleAksesStatus::whereIn('role_id', $roleId)
                 ->where('permission_id', $halamanId)
                 ->where('status', 'aktif')
-                ->where('ms_status_id', '!=', $statusId)
+                ->whereNotIn('ms_status_id', $statusIds)
                 ->update(['status' => 'tidak-aktif']);
         }
 

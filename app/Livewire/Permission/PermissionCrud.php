@@ -95,8 +95,8 @@ class PermissionCrud extends Component
     \Illuminate\Support\Facades\DB::beginTransaction();
     try {
 
-      $validatedForm['dibuat_oleh'] = 'admin';
-      $validatedForm['diupdate_oleh'] = 'admin';
+      $validatedForm['dibuat_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama;
+      $validatedForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama;
       $validatedForm['is_activated'] = 1;
       // image_url
       $folderName = $this->baseFolderName;

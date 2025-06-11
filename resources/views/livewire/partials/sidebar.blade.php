@@ -2,14 +2,14 @@
   <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-100 lg:bg-inherit ">
 
     {{-- BRAND --}}
-    <x-app-brand class="px-5 pt-4" />
+    <x-app-brand class="px-5 pt-4 bg-white" />
 
 
 
     {{-- MENU --}}
-    <x-menu activate-by-route class="md:pt-8 ">
+    <x-menu activate-by-route class="md:pt-8  bg-white">
 
-      @if ($user = auth()->user())
+      {{-- @if ($user = auth()->user())
         <x-menu-separator />
 
         <x-list-item :item="$user" value="name" sub-value="email" no-separator no-hover class="-mx-2 !-my-2 rounded">
@@ -18,7 +18,7 @@
               link="/logout" />
           </x-slot:actions>
         </x-list-item>
-      @endif
+      @endif --}}
 
       <x-menu-item title="Dashboard" icon="o-chart-bar-square" link="/dashboard1" :class="request()->is('/dashboard1') ? 'active' : ''" />
       <x-menu-separator title="Master Data" icon="o-sparkles" />

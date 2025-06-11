@@ -104,8 +104,8 @@ class MsBarangCrud extends Component
     \Illuminate\Support\Facades\DB::beginTransaction();
     try {
 
-      $validatedForm['dibuat_oleh'] = 'admin';
-      $validatedForm['diupdate_oleh'] = 'admin';
+      $validatedForm['dibuat_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama;
+      $validatedForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama;
 
       $this->masterModel::create($validatedForm);
       \Illuminate\Support\Facades\DB::commit();

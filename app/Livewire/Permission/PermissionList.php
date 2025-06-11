@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Permission;
 
+use App\Models\MsAksi;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use App\Models\Admin;
@@ -49,8 +50,43 @@ class PermissionList extends Component
 
   public function mount()
   {
+    $this->cekDanBuatPermissions();
     // $this->permission('permission-list');
   }
+
+  public function cekDanBuatPermissions(): void
+  {
+    $actions = MsAksi::pluck('nama')->toArray(); // Contoh: ['list', 'buat', 'simpan', 'ubah', 'hapus', ...]
+    $permissions = Permission::pluck('name')->toArray();
+
+    // Kelompokkan permission yang sudah ada berdasarkan nama halaman (prefix)
+    $grouped = [];
+
+    foreach ($permissions as $perm) {
+      if (str_contains($perm, '-')) {
+        [$halaman, $aksi] = explode('-', $perm, 2);
+        $grouped[$halaman][] = $aksi;
+      }
+    }
+
+    $existingHalaman = array_keys($grouped);
+
+
+    foreach ($existingHalaman as $halaman) {
+      $existingAksi = $grouped[$halaman] ?? [];
+      $missing = array_diff($actions, $existingAksi);
+
+      foreach ($missing as $aksi) {
+        $permissionName = "{$halaman}-{$aksi}";
+        Permission::firstOrCreate([
+          'name' => $permissionName,
+          'guard_name' => 'web'
+        ]);
+        logger("✅ Permission dibuat: $permissionName");
+      }
+    }
+  }
+
 
   #[Computed]
   public function headers(): array

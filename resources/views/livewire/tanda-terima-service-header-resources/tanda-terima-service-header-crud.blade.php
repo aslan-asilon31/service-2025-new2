@@ -28,13 +28,7 @@
             </div>
           </div>
           <div class="mb-3">
-            <x-select label="Status" wire:model="headerForm.status" :options="[
-                ['id' => 'batal', 'name' => 'Batal', 'disabled' => true],
-                ['id' => 'draf', 'name' => 'Draf', 'disabled' => true],
-                ['id' => 'selesai', 'name' => 'Selesai', 'disabled' => true],
-                ['id' => 'terbit', 'name' => 'Terbit'],
-                ['id' => 'arsip', 'name' => 'Arsip'],
-            ]" />
+            <x-select label="Status" wire:model="headerForm.status" :options="$options" />
           </div>
         </div>
 
@@ -42,7 +36,7 @@
         <div class="text-center mt-3">
           <x-errors class="text-white mb-3" />
           <x-button type="submit" :label="$id ? 'ubah' : 'simpan'" class="btn-success btn-sm text-white" />
-          <x-button label="batal" class="btn-error btn-sm text-white" wire.click="closeModal" />
+          <x-button label="batal" class="btn-error btn-sm text-white" link="/tanda-terima-service" />
         </div>
       </div>
     </x-form>
@@ -120,7 +114,7 @@
         @endscope
 
         @scope('cell_status', $row)
-          <x-badge :value="$row->status == 'aktif' ? 'Yes' : 'No'"
+          <x-badge :value="$row->status == 'aktif' ? ''Aktif' : 'Tidak Aktif'"
             class=" {{ $row->status == 'aktif' ? 'badge-primary badge-soft' : 'badge-error  badge-soft' }}" />
         @endscope
 

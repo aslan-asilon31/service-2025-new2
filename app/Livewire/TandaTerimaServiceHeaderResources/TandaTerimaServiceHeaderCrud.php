@@ -8,7 +8,7 @@ use App\Livewire\TandaTerimaServiceHeaderResources\Forms\TandaTerimaServiceDetai
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use App\Models\TrTandaTerimaServiceDetail;
-use App\Models\MsPegawai;
+use App\Models\MsAksi;
 use App\Models\PegawaiAksesCabang;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Helpers\Permission\Traits\WithPermission;
@@ -130,8 +130,8 @@ class TandaTerimaServiceHeaderCrud extends Component
     \Illuminate\Support\Facades\DB::beginTransaction();
     try {
 
-      $validatedForm['dibuat_oleh'] = 'admin';
-      $validatedForm['diupdate_oleh'] = 'admin';
+      $validatedForm['dibuat_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama;
+      $validatedForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama;
       $validatedForm['is_activated'] = 1;
       // image_url
       $folderName = $this->baseFolderName;
@@ -254,35 +254,36 @@ class TandaTerimaServiceHeaderCrud extends Component
 
   public function ubah()
   {
-
     $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
-    $roleIds = $pegawai->roles()->pluck('id')->toArray();
-    $halamanId = Permission::where('name', 'nama-halaman')->value('id');
+    $roleId = $pegawai->roles()->value('id');
+    $halamanId = Permission::where('name', 'tanda_terima_service-update')->value('id');
 
-    $statusDropdownAktif = RoleAksesStatus::whereIn('role_id', $roleIds)
-      ->where('permission_id', $halamanId)
-      ->where('status', 'aktif')
+    $statusDropdownTidakAktif = RoleAksesStatus::where('role_id', $roleId)
+      // ->where('permission_id', $halamanId)
+      ->where('status', 'tidak-aktif')
       ->pluck('ms_status_id')
       ->toArray();
 
-    $statusList = MsStatus::whereIn('nama', ['batal', 'draf', 'selesai', 'terbit', 'arsip'])->get();
+    $statusList = MsStatus::orderBy('nomor', 'asc')->get();
 
-    $statusMap = [
-      'batal' => 'Batal',
-      'draf' => 'Draf',
-      'selesai' => 'Selesai',
-      'terbit' => 'Terbit',
-      'arsip' => 'Arsip',
-    ];
+    $statusMap = $statusList->pluck('nama')->mapWithKeys(fn($item) => [
+      $item => ucfirst($item)
+    ])->toArray();
 
-    $this->options = collect($statusMap)->map(function ($name, $key) use ($statusList, $statusDropdownAktif) {
+    $this->options = collect($statusMap)->map(function ($name, $key) use ($statusList, $statusDropdownTidakAktif) {
+      // Cari ID status berdasarkan nama
       $statusId = $statusList->firstWhere('nama', $key)?->id;
+
+      // Mengatur disabled menjadi false jika statusId ada dalam statusDropdownTidakAktif
       return [
         'id' => $key,
         'name' => $name,
-        'disabled' => !in_array($statusId, $statusDropdownAktif ?? [])
+        'disabled' => in_array($statusId, $statusDropdownTidakAktif) // Set disabled ke false jika ada di array statusDropdownTidakAktif
       ];
     })->values()->toArray();
+
+    // dd($this->options);
+
 
     $this->permission('tanda_terima_service-ubah');
     $this->isReadonly = false;
@@ -293,6 +294,8 @@ class TandaTerimaServiceHeaderCrud extends Component
 
   public function update()
   {
+    $halaman = 'tanda_terima_service-update';
+
     $halamanId = Permission::where('name', $halaman)->value('id');
 
     $validatedHeaderForm = $this->validate(
@@ -301,8 +304,8 @@ class TandaTerimaServiceHeaderCrud extends Component
       $this->headerForm->attributes()
     )['headerForm'];
 
-    $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
 
+    $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
     $aksesCabang = PegawaiAksesCabang::with(['msPegawai', 'msCabang'])
       ->where('ms_pegawai_id', $pegawai->id)
       ->first();
@@ -314,24 +317,18 @@ class TandaTerimaServiceHeaderCrud extends Component
       $validatedHeaderForm['status'],
     ]);
 
-    $statusId = MsStatus::where('nama', 'terbit')->value('id');
-    $halamanId = Permission::where('name', $halaman)->value('id');
-    $roleId = $pegawai->roles()->pluck('id')->toArray();
-
-
     $masterData = $this->headerModel::findOrFail($this->id);
+
     try {
       $validatedForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama ?? null;
-
       $masterData->update($validatedForm);
-      $this->redirect('/products', true);
-
-      $this->success('Data has been updated');
+      $this->redirect('/tanda-terima-service', true);
+      $this->success('Data berhasil di update');
     } catch (\Throwable $e) {
       \Log::error('Data failed : ' . $e->getMessage());
 
       \Illuminate\Support\Facades\DB::rollBack();
-      $this->error('Data failed to update');
+      $this->error('Data gagal di update');
     }
   }
 
