@@ -16,6 +16,9 @@ class TrSpServiceHeader extends Model
         return (string) str()->orderedUuid();
     }
 
+    const CREATED_AT = 'tgl_dibuat';
+    const UPDATED_AT = 'tgl_diupdate';
+
     protected $keyType = 'string';
     public $incrementing = false;
     protected $guarded = [];

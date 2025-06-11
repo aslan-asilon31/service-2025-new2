@@ -19,6 +19,9 @@ class MsRak extends Model
     public $incrementing = false;
     public $table = 'ms_rak';
 
+    const CREATED_AT = 'tgl_dibuat';
+    const UPDATED_AT = 'tgl_diupdate';
+
     protected function casts(): array
     {
         return [

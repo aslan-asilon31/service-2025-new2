@@ -13,4 +13,10 @@ class Role extends Authenticatable
     use HasFactory, Notifiable, HasRoles;
 
     public $table = 'roles';
+
+
+    public function roleAksesStatuses()
+    {
+        return $this->hasMany(RoleAksesStatus::class);
+    }
 }

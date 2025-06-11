@@ -272,11 +272,10 @@ class TandaTerimaServiceHeaderCrud extends Component
       ->where('ms_pegawai_id', $user->id)
       ->first();
 
-    $halaman = 'tanda_terima_service-update';
 
     \Illuminate\Support\Facades\Gate::authorize('update', [
       \App\Models\Permission::class,
-      $halaman,
+      $halaman = 'tanda_terima_service-update',
       $validatedHeaderForm['ms_cabang_id'],
       $validatedHeaderForm['status'],
     ]);

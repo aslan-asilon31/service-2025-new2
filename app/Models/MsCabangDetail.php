@@ -19,6 +19,9 @@ class MsCabangDetail extends Model
     protected $table = 'ms_cabang_detail';
     public $incrementing = false;
 
+    const CREATED_AT = 'tgl_dibuat';
+    const UPDATED_AT = 'tgl_diupdate';
+
     protected function casts(): array
     {
         return [

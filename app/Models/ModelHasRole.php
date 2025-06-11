@@ -14,6 +14,8 @@ class ModelHasRole extends Authenticatable
 
     public $table = 'model_has_roles';
     protected $fillable = ['role_id', 'model_type', 'model_id'];
+    const CREATED_AT = 'tgl_dibuat';
+    const UPDATED_AT = 'tgl_diupdate';
 
 
     protected $casts = [

@@ -16,8 +16,10 @@ class TrFakturHeader extends Model
     }
     protected $guarded = [];
     protected $table = 'tr_faktur_header';
-    // const CREATED_AT = 'tgl_dibuat';
-    // const UPDATED_AT = 'tgl_diupdate';
+
+    const CREATED_AT = 'tgl_dibuat';
+    const UPDATED_AT = 'tgl_diupdate';
+
     protected $keyType = 'string';
     public $incrementing = false;
 

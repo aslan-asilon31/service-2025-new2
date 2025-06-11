@@ -15,31 +15,35 @@
 
       <div class="w-10/12">
         <div class="flex flex-row">
-          <div class="bg-no-repeat bg-blue-200 border border-blue-300 rounded-xl w-7/12 mr-2 p-6"
+          <div class="bg-no-repeat bg-blue-200 border border-blue-300 rounded-xl w-7/12 mr-2 p-6 shadow-lg "
             style="background-image: url(); background-position: 90% center;">
-            <p class="text-2xl text-indigo-900">Selamat Datang
-              <br><strong>{{ Auth::guard('pegawai')->user()->nama }}</strong>
-            </p>
-            <span
-              class="bg-blue-300 text-xl text-white inline-block rounded-full mt-12 px-8 py-2"><strong>01:51</strong></span>
+            <div class="flex justify-between">
+              <div>
+                <p class="text-2xl text-indigo-900 ">Selamat Datang
+                  <br><strong>{{ Auth::guard('pegawai')->user()->nama }}</strong>
+                </p>
+              </div>
+              <div>
+                <img src="{{ asset('frontend/assets/img/flat-img1.png') }}" class="w-48" alt=""
+                  srcset="">
+              </div>
+            </div>
+
           </div>
 
-          <div class="bg-no-repeat bg-orange-200 border border-orange-300 rounded-xl w-5/12 ml-2 p-6"
-            style="background-image: url(https://previews.dropbox.com/p/thumb/AAuwpqWfUgs9aC5lRoM_f-yi7OPV4txbpW1makBEj5l21sDbEGYsrC9sb6bwUFXTSsekeka5xb7_IHCdyM4p9XCUaoUjpaTSlKK99S_k4L5PIspjqKkiWoaUYiAeQIdnaUvZJlgAGVUEJoy-1PA9i6Jj0GHQTrF_h9MVEnCyPQ-kg4_p7kZ8Yk0TMTL7XDx4jGJFkz75geOdOklKT3GqY9U9JtxxvRRyo1Un8hOObbWQBS1eYE-MowAI5rNqHCE_e-44yXKY6AKJocLPXz_U4xp87K4mVGehFKC6dgk_i5Ur7gspuD7gRBDvd0sanJ9Ybr_6s2hZhrpad-2WFwWqSNkh/p.png?fv_content=true&size_mode=5); background-position: 100% 40%;">
-            <p class="text-5xl text-indigo-900">Inbox <br><strong>23</strong></p>
-            <a href=""
-              class="bg-orange-300 text-xl text-white underline hover:no-underline inline-block rounded-full mt-12 px-8 py-2"><strong>See
-                messages</strong></a>
+          <div class="bg-no-repeat bg-blue-100 border border-blue-200  rounded-xl w-5/12 ml-2 p-6"
+            style=" background-position: 100% 40%;">
+            Chart1
           </div>
         </div>
         <div class="flex flex-row h-64 mt-6">
-          <div class="bg-white rounded-xl shadow-lg px-6 py-4 w-4/12">
+          <div class="bg-white bg-blue-100 border border-blue-200 rounded-xl shadow-lg px-6 py-4 w-4/12">
             a
           </div>
-          <div class="bg-white rounded-xl shadow-lg mx-6 px-6 py-4 w-4/12">
+          <div class="bg-white bg-blue-100 border border-blue-200 rounded-xl shadow-lg mx-6 px-6 py-4 w-4/12">
             b
           </div>
-          <div class="bg-white rounded-xl shadow-lg px-6 py-4 w-4/12">
+          <div class="bg-white bg-blue-100 border border-blue-200 rounded-xl shadow-lg px-6 py-4 w-4/12">
             c
           </div>
         </div>

@@ -14,10 +14,13 @@ class MsStatus extends Model
     {
         return (string) str()->orderedUuid();
     }
+    protected $table = 'ms_status';
     protected $guarded = [];
     protected $keyType = 'string';
-    protected $table = 'ms_status';
     public $incrementing = false;
+
+    const CREATED_AT = 'tgl_dibuat';
+    const UPDATED_AT = 'tgl_diupdate';
 
     protected function casts(): array
     {

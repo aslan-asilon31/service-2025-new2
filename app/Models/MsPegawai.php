@@ -20,6 +20,9 @@ class MsPegawai  extends  Authenticatable
     public $timestamps = false;
     public $guarded = [];
 
+    const CREATED_AT = 'tgl_dibuat';
+    const UPDATED_AT = 'tgl_diupdate';
+
     public function modelHasRoles()
     {
         return $this->hasMany(ModelHasRole::class, 'model_id');

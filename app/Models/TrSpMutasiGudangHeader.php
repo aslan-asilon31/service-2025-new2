@@ -20,6 +20,9 @@ class TrSpMutasiGudangHeader extends Model
     public $incrementing = false;
     public $timestamps = false;
 
+    const CREATED_AT = 'tgl_dibuat';
+    const UPDATED_AT = 'tgl_diupdate';
+
     protected function casts(): array
     {
         return [

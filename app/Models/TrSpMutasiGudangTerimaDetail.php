@@ -19,6 +19,9 @@ class TrSpMutasiGudangTerimaDetail extends Model
     public $incrementing = false;
     protected $guarded = [];
 
+    const CREATED_AT = 'tgl_dibuat';
+    const UPDATED_AT = 'tgl_diupdate';
+
     protected function casts(): array
     {
         return [
