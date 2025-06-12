@@ -19,43 +19,67 @@ class PermissionPolicy
         //
     }
 
-    public function update(MsPegawai $msPegawai, $halaman, $cabang, $status): bool
+    public function simpan(MsPegawai $msPegawai, $halaman, $cabang, $status): bool
     {
-        $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
 
-        $hasPermission = $pegawai->getAllPermissions()
+        $adakahPermission = $msPegawai->getAllPermissions()
             ->pluck('name')
             ->contains($halaman);
-        if (!$hasPermission) {
-            abort(403, 'Hak Akses Anda Dibatasi1.');
+        if (!$adakahPermission) {
+            return false;
         }
 
-        $aksesCabangId = PegawaiAksesCabang::where('ms_pegawai_id', $pegawai->id)->value('ms_cabang_id');
-        if ($aksesCabangId != $cabang) {
-            abort(403, 'Hak Akses Anda Dibatasi2.');
+        $adakahAksesCabang = PegawaiAksesCabang::where('ms_pegawai_id', $msPegawai->id)->value('ms_cabang_id');
+        if ($adakahAksesCabang != $cabang) {
+            return false;
         }
 
-        $statusIds = MsStatus::whereIn('nama', ['terbit', 'arsip'])->pluck('id')->toArray();
         $halamanId = Permission::where('name', $halaman)->value('id');
-        $roleId = $pegawai->roles()->pluck('id')->toArray();
-        $hasAksesStatus = RoleAksesStatus::where('role_id', $roleId)
-            ->whereIn('ms_status_id', $statusIds)
+        $adakahAksesStatus = RoleAksesStatus::where('role_id', $msPegawai->roles()->pluck('id')->toArray())
             ->where('permission_id', $halamanId)
             ->where('status', 'aktif')
             ->exists();
-
-        if (!$hasAksesStatus) {
-            abort(403, 'Role Anda tidak memiliki izin untuk mengubah ke status ini.');
+        if ($adakahAksesStatus != $status) {
+            return false;
         }
 
-        if ($status == 'terbit' && !in_array($pegawai->getRoleNames()->first(), ['manager', 'head-office', 'developer'])) {
-            RoleAksesStatus::whereIn('role_id', $roleId)
-                ->where('permission_id', $halamanId)
-                ->where('status', 'aktif')
-                ->whereNotIn('ms_status_id', $statusIds)
-                ->update(['status' => 'tidak-aktif']);
+        if ($adakahPermission && $adakahAksesCabang && $adakahAksesStatus)
+            $diizinkankahsemua = true;
+        else {
+            $diizinkankahsemua = false;
+        }
+        return $diizinkankahsemua;
+    }
+
+    public function update(MsPegawai $msPegawai, $halaman, $cabang, $status): bool
+    {
+
+        $adakahPermission = $msPegawai->getAllPermissions()
+            ->pluck('name')
+            ->contains($halaman);
+        if (!$adakahPermission) {
+            return false;
         }
 
-        return true;
+        $adakahAksesCabang = PegawaiAksesCabang::where('ms_pegawai_id', $msPegawai->id)->value('ms_cabang_id');
+        if ($adakahAksesCabang != $cabang) {
+            return false;
+        }
+
+        $halamanId = Permission::where('name', $halaman)->value('id');
+        $adakahAksesStatus = RoleAksesStatus::where('role_id', $msPegawai->roles()->pluck('id')->toArray())
+            ->where('permission_id', $halamanId)
+            ->where('status', 'aktif')
+            ->exists();
+        if ($adakahAksesStatus != $status) {
+            return false;
+        }
+
+        if ($adakahPermission && $adakahAksesCabang && $adakahAksesStatus)
+            $diizinkankahsemua = true;
+        else {
+            $diizinkankahsemua = false;
+        }
+        return $diizinkankahsemua;
     }
 }

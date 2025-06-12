@@ -22,8 +22,6 @@ trait WithTandaTerimaService
     #[\Livewire\Attributes\Locked]
     public bool $isDisabled = false;
 
-    #[\Livewire\Attributes\Locked]
-    public array $options = [];
 
     #[\Livewire\Attributes\Locked]
     protected $headerModel = \App\Models\TrTandaTerimaServiceHeader::class;

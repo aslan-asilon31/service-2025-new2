@@ -73,7 +73,6 @@ class MsGudangList extends Component
   public function rows(): LengthAwarePaginator
   {
 
-
     $query = MsGudang::query();
 
     $query->when($this->search, fn($q) => $q->where('nama', 'like', "%{$this->search}%"))

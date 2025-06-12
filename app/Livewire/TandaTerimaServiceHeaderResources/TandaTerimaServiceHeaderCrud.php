@@ -4,7 +4,7 @@ namespace App\Livewire\TandaTerimaServiceHeaderResources;
 
 use App\Livewire\TandaTerimaServiceHeaderResources\Forms\TandaTerimaServiceHeaderForm;
 use App\Livewire\TandaTerimaServiceHeaderResources\Forms\TandaTerimaServiceDetailForm;
-
+use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use App\Models\TrTandaTerimaServiceDetail;
@@ -12,7 +12,7 @@ use App\Models\MsAksi;
 use App\Models\PegawaiAksesCabang;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Helpers\Permission\Traits\WithPermission;
-use App\Helpers\FormHook\Traits\WithTandaTerimaService;
+// use App\Helpers\FormHook\Traits\WithTandaTerimaService;
 use App\Models\TrTandaTerimaServiceHeader;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Url;
@@ -32,10 +32,19 @@ class TandaTerimaServiceHeaderCrud extends Component
   use \Livewire\WithFileUploads;
   use \Mary\Traits\Toast;
   use WithPermission;
-  use WithTandaTerimaService;
+  // use WithTandaTerimaService;
+  use \App\Helpers\Permission\Traits\HasAccess;
+  use \App\Helpers\FormHook\Traits\AksesOpsi;
 
-  public \Illuminate\Support\Collection $pelangganSearchable;
+  public Collection $pencarianPelanggan;
+  public Collection $pencarianCabang;
+  public Collection $pencarianBarang;
+  public Collection $pencarianRak;
 
+  public bool $modalDetail = false;
+  public array $validatedForm = [];
+  public array $validatedFormDetail = [];
+  public array $headers = [];
 
   #[\Livewire\Attributes\Locked]
   public string $title = 'Tanda Terima Service';
@@ -46,7 +55,7 @@ class TandaTerimaServiceHeaderCrud extends Component
   public  $brands = [];
 
   public $selectedBrandId = '';
-  public $details = [];
+  public array $details = [];
   public $selectedProductCategoryFirstId = '';
   public $productCategoryFirsts = [];
   public $productCategories = [];
@@ -80,6 +89,19 @@ class TandaTerimaServiceHeaderCrud extends Component
   public array $options = [];
 
   #[\Livewire\Attributes\Locked]
+  public array $optionStatus = [];
+
+  #[\Livewire\Attributes\Locked]
+  public array $optionCabang = [];
+
+  #[\Livewire\Attributes\Locked]
+  public array $optionPegawai = [];
+
+  #[\Livewire\Attributes\Locked]
+  public array $optionPelanggan = [];
+
+
+  #[\Livewire\Attributes\Locked]
   protected $headerModel = \App\Models\TrTandaTerimaServiceHeader::class;
 
   #[\Livewire\Attributes\Locked]
@@ -87,6 +109,7 @@ class TandaTerimaServiceHeaderCrud extends Component
 
 
   public array $statusDropdownAktif = [];
+  public $pegawai;
 
 
   // #[\Livewire\Attributes\Session]
@@ -97,6 +120,7 @@ class TandaTerimaServiceHeaderCrud extends Component
 
   public function mount()
   {
+    $this->initialize();
 
     if ($this->id && $this->readonly) {
       $this->title .= ' (Tampil)';
@@ -108,47 +132,72 @@ class TandaTerimaServiceHeaderCrud extends Component
       $this->title .= ' (Buat)';
       $this->buat();
     }
-
-    $this->initialize();
   }
 
 
   public function initialize()
   {
+    $this->cariPelanggan();
+    $this->cariCabang();
+    $this->cariBarang();
+    $this->cariRak();
+
+    $this->pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
     session()->put('TandaTerimaServiceHeaderId', $this->id);
   }
 
   public function simpan()
   {
-    $validatedForm = $this->validate(
+
+    $validatedHeaderForm = $this->validate(
       $this->headerForm->rules(),
       [],
       $this->headerForm->attributes()
     )['headerForm'];
 
+    $halaman = 'tanda_terima_service-simpan';
+    $msCabangId = $validatedHeaderForm['ms_cabang_id'];
+    $status = $validatedHeaderForm['status'];
+
+    $result = \Illuminate\Support\Facades\Gate::authorize('simpan', [
+      \App\Models\Permission::class,
+      $halaman,
+      $msCabangId,
+      $status,
+    ]);
+
 
     \Illuminate\Support\Facades\DB::beginTransaction();
     try {
 
-      $validatedForm['dibuat_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama;
-      $validatedForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama;
-      $validatedForm['is_activated'] = 1;
-      // image_url
-      $folderName = $this->baseFolderName;
-      $now = now()->format('Ymd_His_u');
-      $imageName = $this->baseImageName . '_' . str($validatedForm['name'])->slug('_')  . '_' . 'image' . '_' . $now;
-      $newImageUrl = $validatedForm['image_url'];
+      $validatedHeaderForm['dibuat_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama;
+      $validatedHeaderForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama;
 
-      $validatedForm['image_url'] = $this->saveImage(
-        $folderName,
-        $imageName,
-        $newImageUrl,
-      );
-      // ./image_url
+      $header = $this->headerModel::create($validatedHeaderForm);
 
-      $this->headerModel::create($validatedForm);
+      $details = collect($this->details)
+        ->map(function ($detail, $index) use ($header) {
+          return [
+            'id' => str()->orderedUuid()->toString(),
+            'tr_tanda_terima_service_header_id' => $header->id,
+            'ms_barang_id' => $detail['ms_barang_id'],
+            'ms_rak_id' => $detail['ms_rak_id'],
+            'catatan' => $detail['catatan'],
+            'qty' => $detail['qty'],
+            'nomor' => $detail['nomor'],
+            'tgl_dibuat' => $detail['tgl_dibuat'],
+            'tgl_diupdate' => now(),
+            'dibuat_oleh' => $detail['dibuat_oleh'],
+            'diupdate_oleh' => $detail['diupdate_oleh'],
+          ];
+        })
+        ->toArray();
+
+      $detail = $this->detailModel::insert($details);
+      $this->headerForm->reset();
+      $this->reset('details');
       \Illuminate\Support\Facades\DB::commit();
-      $this->redirect('/products', true);
+      $this->redirect('/tanda-terima-service', true);
       $this->success('Data has been stored');
     } catch (\Throwable $th) {
       \Illuminate\Support\Facades\DB::rollBack();
@@ -158,89 +207,51 @@ class TandaTerimaServiceHeaderCrud extends Component
     }
   }
 
+  public function simpanDetail()
+  {
+    $this->detailForm->id = str()->orderedUuid()->toString();
+    $this->detailForm->tgl_dibuat = now();
+    $this->detailForm->dibuat_oleh = 'admin';
+    $this->detailForm->diupdate_oleh = 'admin';
+
+    $validatedDetailForm = $this->validate(
+      $this->detailForm->rules(),
+      [],
+      $this->detailForm->attributes()
+    )['detailForm'];
+
+    $this->details[] =  $validatedDetailForm;
+    $this->modalDetail = false;
+    $this->reset('detailForm');
+    $this->success('Data berhasil dibuat');
+  }
+
   public function buat()
   {
+    $this->optionStatus = $this->aksesStatusOption();
+
     $this->permission('tanda_terima_service-buat');
     $this->headerForm->reset();
+    $this->detailForm->reset();
 
-    $nomorTerakhir = \Illuminate\Support\Facades\DB::table('ms_barang')->max('nomor') ?? 0;
-    $this->headerForm->nomor = $nomorTerakhir + 1;
-
-    // ----------------------------------------------------------------
-
-    $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
-
-    $pegawaiAksesCabang = \Illuminate\Support\Facades\DB::table('pegawai_akses_cabang as pac')
-      ->join('ms_cabang as mc', 'pac.ms_cabang_id', '=', 'mc.id')
-      ->where('pac.ms_pegawai_id', $pegawai->id)
-      ->select('mc.*')
-      ->get()->toArray();
-
-    $cabangId = $pegawaiAksesCabang[0]->id;
-
-    $pegawaiAksesCabangGudang = \Illuminate\Support\Facades\DB::table('ms_gudang')
-      ->join('ms_rak', 'ms_rak.ms_gudang_id', '=', 'ms_gudang.id')
-      ->where('ms_gudang.ms_cabang_id', $cabangId)
-      ->select('ms_gudang.*')
-      ->get();
-
-    $gudangId = $pegawaiAksesCabangGudang;
-    // $gudangId = $pegawaiAksesCabangGudang->pluck('id');
-
-    dd($gudangId);
-
-    $pegawaiAksesCabangGudangRak = DB::table('ms_rak as rak')
-      ->join('ms_gudang as gudang', 'rak.ms_gudang_id', '=', 'gudang.id')
-      ->whereIn('rak.ms_gudang_id', $gudangId)
-      ->select('rak.*')
-      ->get();
-
-    dd($pegawaiAksesCabangGudangRak);
-
-    $rakIds = $pegawaiAksesCabangGudangRak;
-
-
-
-    $pegawaiAksesCabangRak = \Illuminate\Support\Facades\DB::table('ms_gudang')
-      ->join('ms_rak', 'ms_rak.ms_gudang_id', '=', 'ms_gudang.id')
-      ->where('ms_gudang.id', $cabangId)
-      ->select('ms_gudang.*')
-      ->get()->toArray();
-    dd($pegawaiAksesCabangRak);
-
-    $pegawaiAksesCabang = \Illuminate\Support\Facades\DB::table('pegawai_akses_cabang as pac')
-      ->join('ms_cabang as mc', 'pac.ms_cabang_id', '=', 'mc.id')
-      ->where('pac.ms_pegawai_id', $pegawai->id)
-      ->select('mc.*')
-      ->get()->toArray();
-
-    $details = collect($this->details)
-      ->map(function ($detail, $index) use ($header) {
-        return [
-          'id' => str()->orderedUuid()->toString(),
-          'sales_order_id' => $header->id,
-          'product_id' => $detail['product_id'],
-          'selling_price' => $detail['selling_price'],
-          'qty' => $detail['qty'],
-        ];
-      })
-      ->toArray();
-
-    $this->details = $details;
+    $nomorHeaderTerakhir = \Illuminate\Support\Facades\DB::table('tr_tanda_terima_service_header')->max('nomor') ?? 0;
+    $this->headerForm->nomor = $nomorHeaderTerakhir + 1;
   }
 
   public function buatDetail()
   {
     $this->detailForm->reset();
-    $this->bukaModal();
+    $this->modalDetail = true;
+    $nomorDetailTerakhir = \Illuminate\Support\Facades\DB::table('tr_tanda_terima_service_detail')->max('nomor') ?? 0;
+    $this->detailForm->nomor = $nomorDetailTerakhir + 1;
   }
 
   public function ubahDetail($detailIndex)
   {
     $this->isReadonly = false;
     $this->isDisabled = false;
-    $masterData = $this->detailModel::findOrFail($detailIndex);
-    $this->detailForm->fill($masterData);
+    $masterHeaderData = $this->detailModel::findOrFail($detailIndex);
+    $this->detailForm->fill($masterHeaderData);
     $this->modalDetail = true;
   }
 
@@ -248,48 +259,18 @@ class TandaTerimaServiceHeaderCrud extends Component
   {
     $this->isReadonly = true;
     $this->isDisabled = true;
-    $masterData = $this->headerModel::findOrFail($this->id);
-    $this->headerForm->fill($masterData);
+    $masterHeaderData = $this->headerModel::findOrFail($this->id);
+    $this->headerForm->fill($masterHeaderData);
   }
 
   public function ubah()
   {
-    $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
-    $roleId = $pegawai->roles()->value('id');
-    $halamanId = Permission::where('name', 'tanda_terima_service-update')->value('id');
-
-    $statusDropdownTidakAktif = RoleAksesStatus::where('role_id', $roleId)
-      // ->where('permission_id', $halamanId)
-      ->where('status', 'tidak-aktif')
-      ->pluck('ms_status_id')
-      ->toArray();
-
-    $statusList = MsStatus::orderBy('nomor', 'asc')->get();
-
-    $statusMap = $statusList->pluck('nama')->mapWithKeys(fn($item) => [
-      $item => ucfirst($item)
-    ])->toArray();
-
-    $this->options = collect($statusMap)->map(function ($name, $key) use ($statusList, $statusDropdownTidakAktif) {
-      // Cari ID status berdasarkan nama
-      $statusId = $statusList->firstWhere('nama', $key)?->id;
-
-      // Mengatur disabled menjadi false jika statusId ada dalam statusDropdownTidakAktif
-      return [
-        'id' => $key,
-        'name' => $name,
-        'disabled' => in_array($statusId, $statusDropdownTidakAktif) // Set disabled ke false jika ada di array statusDropdownTidakAktif
-      ];
-    })->values()->toArray();
-
-    // dd($this->options);
-
-
+    $this->options = $this->aksesStatusOption();
     $this->permission('tanda_terima_service-ubah');
     $this->isReadonly = false;
     $this->isDisabled = false;
-    $masterData = $this->headerModel::findOrFail($this->id);
-    $this->headerForm->fill($masterData);
+    $masterHeaderData = $this->headerModel::findOrFail($this->id);
+    $this->headerForm->fill($masterHeaderData);
   }
 
   public function update()
@@ -305,23 +286,16 @@ class TandaTerimaServiceHeaderCrud extends Component
     )['headerForm'];
 
 
-    $pegawai = \Illuminate\Support\Facades\Auth::guard('pegawai')->user();
-    $aksesCabang = PegawaiAksesCabang::with(['msPegawai', 'msCabang'])
-      ->where('ms_pegawai_id', $pegawai->id)
-      ->first();
+    $msCabangId = $validatedHeaderForm['ms_cabang_id'];
+    $status = $validatedHeaderForm['status'];
 
-    \Illuminate\Support\Facades\Gate::authorize('update', [
-      \App\Models\Permission::class,
-      $halaman = 'tanda_terima_service-update',
-      $validatedHeaderForm['ms_cabang_id'],
-      $validatedHeaderForm['status'],
-    ]);
+    $this->aksesPermissionPolicy($halaman, $msCabangId, $status);
 
-    $masterData = $this->headerModel::findOrFail($this->id);
+    $masterHeaderData = $this->headerModel::findOrFail($this->id);
 
     try {
-      $validatedForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama ?? null;
-      $masterData->update($validatedForm);
+      $validatedHeaderForm['diupdate_oleh'] = \Illuminate\Support\Facades\Auth::guard('pegawai')->user()->nama ?? null;
+      $masterHeaderData->update($validatedHeaderForm);
       $this->redirect('/tanda-terima-service', true);
       $this->success('Data berhasil di update');
     } catch (\Throwable $e) {
@@ -332,25 +306,7 @@ class TandaTerimaServiceHeaderCrud extends Component
     }
   }
 
-  public function hapus()
-  {
-    $masterData = $this->headerModel::findOrFail($this->id);
 
-    \Illuminate\Support\Facades\DB::beginTransaction();
-    try {
-
-      $this->deleteImage($masterData['image_url']);
-
-      $masterData->delete();
-      \Illuminate\Support\Facades\DB::commit();
-      $this->redirect('/products', true);
-
-      $this->success('Data has been deleted');
-    } catch (\Throwable $th) {
-      \Illuminate\Support\Facades\DB::rollBack();
-      $this->error('Data failed to delete');
-    }
-  }
 
   public array $sortBy = ['column' => 'nama', 'direction' => 'desc'];
 
@@ -403,14 +359,83 @@ class TandaTerimaServiceHeaderCrud extends Component
     return $paginator;
   }
 
-  public function searchPelanggan(string $value = '')
+  public function cariPelanggan(string $value = '')
   {
     $selectedOption = \App\Models\MsPelanggan::where('id', $this->headerForm->ms_pelanggan_id)->get();
-
-    $this->pelangganSearchable = \App\Models\MsPelanggan::query()
+    $this->pencarianPelanggan = \App\Models\MsPelanggan::query()
       ->where('nama', 'like', "%$value%")
       ->orderBy('tgl_dibuat')
       ->get()
       ->merge($selectedOption);
+
+    $this->pencarianPelanggan = $this->pencarianPelanggan->map(function ($pelanggan) {
+      return [
+        'id' => $pelanggan->id,
+        'name' => $pelanggan->nama,
+      ];
+    });
+  }
+
+  public function cariCabang(string $value = '')
+  {
+
+    $selectedOption = \App\Models\MsCabang::where('id', $this->headerForm->ms_cabang_id)->get();
+    $this->pencarianCabang = \App\Models\MsCabang::query()
+      ->where('nama', 'like', "%$value%")
+      ->orderBy('tgl_dibuat')
+      ->get()
+      ->merge($selectedOption);
+
+    $this->pencarianCabang = $this->pencarianCabang->map(function ($cabang) {
+      return [
+        'id' => $cabang->id,
+        'name' => $cabang->nama,
+      ];
+    });
+  }
+
+
+  public function cariBarang(string $value = '')
+  {
+
+    $selectedOption = \App\Models\MsBarang::where('id', $this->detailForm->ms_barang_id)->get();
+    $this->pencarianBarang = \App\Models\MsBarang::query()
+      ->where('nama', 'like', "%$value%")
+      ->orderBy('tgl_dibuat')
+      ->get()
+      ->merge($selectedOption);
+
+    $this->pencarianBarang = $this->pencarianBarang->map(function ($barang) {
+      return [
+        'id' => $barang->id,
+        'name' => $barang->nama,
+      ];
+    });
+  }
+
+
+  public function cariRak(string $value = '')
+  {
+
+    $selectedOption = \App\Models\MsRak::where('id', $this->detailForm->ms_rak_id)->get();
+    $this->pencarianRak = \App\Models\MsRak::query()
+      ->where('nama', 'like', "%$value%")
+      ->orderBy('tgl_dibuat')
+      ->get()
+      ->merge($selectedOption);
+
+    $this->pencarianRak = $this->pencarianRak->map(function ($rak) {
+      return [
+        'id' => $rak->id,
+        'name' => $rak->nama,
+      ];
+    });
+  }
+
+
+  public function hapus()
+  {
+    $masterHeaderData = TrTandaTerimaServiceHeader::findOrFail($this->id);
+    $masterHeaderData->update(['status' => 'tidak-aktif']);
   }
 }

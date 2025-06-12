@@ -29,7 +29,7 @@ class TandaTerimaServiceHeaderList extends Component
   use Toast;
   use WithPagination;
   use WithPermission;
-
+  use \App\Helpers\Permission\Traits\HasAccess;
 
   #[Url(except: '')]
   public ?string $search = '';
@@ -59,8 +59,10 @@ class TandaTerimaServiceHeaderList extends Component
       ['key' => 'action', 'label' => 'Action', 'sortable' => false, 'class' => 'whitespace-nowrap border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
       ['key' => 'nomor', 'label' => '#', 'sortable' => false, 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-right'],
       ['key' => 'id', 'label' => 'ID', 'sortBy' => 'id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
-      ['key' => 'nama', 'label' => 'Tanda Terima Service', 'sortBy' => 'nama', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'nama', 'label' => 'Nama Tanda Terima Service', 'sortBy' => 'nama', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'ms_pelanggan_id', 'label' => 'ID Pelanggan', 'sortBy' => 'ms_pelanggan_id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
       ['key' => 'nama_pelanggan', 'label' => 'Pelanggan', 'sortBy' => 'nama_pelanggan', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
+      ['key' => 'ms_cabang_id', 'label' => 'ID Cabang', 'sortBy' => 'ms_cabang_id', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
       ['key' => 'nama_cabang', 'label' => 'Cabang', 'sortBy' => 'nama_cabang', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-left'],
       ['key' => 'status', 'label' => 'Status', 'sortBy' => 'status', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center'],
       ['key' => 'tgl_dibuat', 'label' => 'Tanggal Dibuat', 'format' => ['date', 'Y-m-d H:i:s'], 'sortBy' => 'tgl_dibuat', 'class' => 'whitespace-nowrap  border-1 border-l-1 border-gray-300 dark:border-gray-600 text-center']
@@ -70,12 +72,13 @@ class TandaTerimaServiceHeaderList extends Component
   #[Computed]
   public function rows(): LengthAwarePaginator
   {
-
     $query = TrTandaTerimaServiceHeader::with('msPelanggan');
 
     $query->when($this->search, fn($q) => $q->where('nama', 'like', "%{$this->search}%"))
       ->when(($this->filters['nama'] ?? ''), fn($q) => $q->where('nama', 'like', "%{$this->filters['nama']}%"))
+      ->when(($this->filters['ms_pelanggan_id'] ?? ''), fn($q) => $q->where('ms_pelanggan_id', 'like', "%{$this->filters['ms_pelanggan_id']}%"))
       ->when(($this->filters['nama_pelanggan'] ?? ''), fn($q) => $q->where('nama_pelanggan', 'like', "%{$this->filters['nama_pelanggan']}%"))
+      ->when(($this->filters['ms_cabang_id'] ?? ''), fn($q) => $q->where('ms_cabang_id', 'like', "%{$this->filters['ms_cabang_id']}%"))
       ->when(($this->filters['nama_cabang'] ?? ''), fn($q) => $q->where('nama_cabang', 'like', "%{$this->filters['nama_cabang']}%"))
       ->when(($this->filters['status'] ?? ''), fn($q) => $q->where('status', $this->filters['status']))
       ->when(($this->filters['tgl_dibuat'] ?? ''), function ($q) {
@@ -86,6 +89,7 @@ class TandaTerimaServiceHeaderList extends Component
 
     $paginator = $query
       ->orderBy('nomor', 'asc')
+      ->whereIn('ms_cabang_id', array_unique($this->aksesGudang()->pluck('ms_cabang_id')->toArray()))
       ->paginate(20);
 
     $start = ($paginator->currentPage() - 1) * $paginator->perPage();
@@ -115,8 +119,6 @@ class TandaTerimaServiceHeaderList extends Component
       ]
     )['filterForm'];
 
-
-
     $this->filters = collect($validatedFilters)->reject(fn($value) => $value === '')->toArray();
     $this->success('Filter Result');
     $this->filterDrawer = false;
@@ -129,25 +131,6 @@ class TandaTerimaServiceHeaderList extends Component
     $this->success('filter cleared');
   }
 
-  public function delete()
-  {
-    $masterData = TrTandaTerimaServiceHeader::findOrFail($this->id);
-
-    \Illuminate\Support\Facades\DB::beginTransaction();
-    try {
-
-      $this->deleteImage($masterData['image_url']);
-
-      $masterData->delete();
-      \Illuminate\Support\Facades\DB::commit();
-
-      $this->success('Data has been deleted');
-      $this->redirect($this->url, true);
-    } catch (\Throwable $th) {
-      \Illuminate\Support\Facades\DB::rollBack();
-      $this->error('Data failed to delete');
-    }
-  }
 
   public function render()
   {
