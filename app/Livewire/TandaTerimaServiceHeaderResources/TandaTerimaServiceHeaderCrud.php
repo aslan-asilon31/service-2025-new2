@@ -53,6 +53,7 @@ class TandaTerimaServiceHeaderCrud extends Component
   public ?string $search = '';
 
   public  $brands = [];
+  public int $detailIndex;
 
   public $selectedBrandId = '';
   public array $details = [];
@@ -226,6 +227,47 @@ class TandaTerimaServiceHeaderCrud extends Component
     $this->success('Data berhasil dibuat');
   }
 
+
+  public function ubahDetail($detailIndex)
+  {
+    $detailData = $this->details[$detailIndex];
+    $this->detailForm->fill($detailData);
+    $this->detailId = $this->detailForm->id;
+
+    $this->detailIndex = $detailIndex;
+    return $this->modalDetail = true;
+  }
+
+  // public function ubahDetail($detailIndex)
+  // {
+  //   $masterDetail = $this->detailModel::findOrFail($detailIndex);
+  //   $this->detailForm->fill($masterDetail);
+  //   $this->modalDetail = true;
+  // }
+
+  public function updateDetail()
+  {
+    $validatedDetailForm = $this->validate(
+      $this->detailForm->rules(),
+      [],
+      $this->detailForm->attributes()
+    )['detailForm'];
+
+    $this->details[$this->detailIndex] = $this->detailForm->toArray();
+
+    $this->reset(['detailForm', 'detailIndex']);
+    $this->modalDetail = false;
+    $this->success('Data berhasil diupdate');
+  }
+
+  public function hapusDetail($detailIndex)
+  {
+    // unset($this->details[$detailIndex]);
+    // $this->details = array_values($this->details);
+    // $this->success('Sales Order Detail Deleted.');
+  }
+
+
   public function buat()
   {
     $this->optionStatus = $this->aksesStatusOption();
@@ -246,14 +288,7 @@ class TandaTerimaServiceHeaderCrud extends Component
     $this->detailForm->nomor = $nomorDetailTerakhir + 1;
   }
 
-  public function ubahDetail($detailIndex)
-  {
-    $this->isReadonly = false;
-    $this->isDisabled = false;
-    $masterHeaderData = $this->detailModel::findOrFail($detailIndex);
-    $this->detailForm->fill($masterHeaderData);
-    $this->modalDetail = true;
-  }
+
 
   public function tampil()
   {

@@ -76,8 +76,8 @@
               <tr>
                 <td class="border px-4 py-2">
                   <x-dropdown>
-                    <x-menu-item title="Ubah" icon="o-pencil-square" wire:click="editDetail({{ $index }})" />
-                    <x-menu-item title="Show" icon="o-eye" deleteDetail({{ $index }}) />
+                    <x-menu-item title="Ubah" icon="o-pencil-square" wire:click="ubahDetail({{ $index }})" />
+                    {{-- <x-menu-item title="Show" icon="o-eye" wire:click="deleteDetail({{ $index }}) /> --}}
                   </x-dropdown>
                 </td>
                 <td class="border px-4 py-2">{{ $loop->iteration }}</td>
