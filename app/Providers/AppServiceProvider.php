@@ -24,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Support\Facades\Auth::shouldUse('pegawai');
-        Gate::policy(MsPegawai::class, PermissionPolicy::class);
+        Gate::policy(Permission::class, PermissionPolicy::class);
     }
 }

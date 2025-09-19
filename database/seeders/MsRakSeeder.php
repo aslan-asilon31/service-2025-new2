@@ -13,7 +13,6 @@ class MsRakSeeder extends Seeder
     {
         $now = Carbon::now();
 
-        // Ambil semua id gudang dari ms_gudang
         $gudangIds = DB::table('ms_gudang')->pluck('id')->toArray();
 
         $rakData = [];
